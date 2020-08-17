@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>helloworld again | blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="hexo," />
+  
+
+  <meta name="description" content="重新整理了下博客内容，删除了以前的文章，换了个简洁的主题。学习还是要养成输出的习惯，学完一块内容后，做个总结，回头看看自己过程也是很好的事情。 本文记录一下github pages搭建的过程。 0x01 hexo安装npm等环境安装不再详述。 直接上命令：npm install -g hexo 初始化命令：hexo init，生成基本的结构  0x02 github创建项目创建username.g">
+<meta property="og:type" content="article">
+<meta property="og:title" content="helloworld again">
+<meta property="og:url" content="http://blog.le31ei.top/2020/08/17/helloworld-again/index.html">
+<meta property="og:site_name" content="blog">
+<meta property="og:description" content="重新整理了下博客内容，删除了以前的文章，换了个简洁的主题。学习还是要养成输出的习惯，学完一块内容后，做个总结，回头看看自己过程也是很好的事情。 本文记录一下github pages搭建的过程。 0x01 hexo安装npm等环境安装不再详述。 直接上命令：npm install -g hexo 初始化命令：hexo init，生成基本的结构  0x02 github创建项目创建username.g">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.le31ei.top/2020/08/17/helloworld-again/image-20200817154147163.png">
+<meta property="og:image" content="http://blog.le31ei.top/2020/08/17/helloworld-again/image-20200817155628007.png">
+<meta property="article:published_time" content="2020-08-17T07:31:51.000Z">
+<meta property="article:modified_time" content="2020-08-17T11:58:46.570Z">
+<meta property="article:author" content="le31ei">
+<meta property="article:tag" content="hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.le31ei.top/2020/08/17/helloworld-again/image-20200817154147163.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?ccc85f1c0e860658bc30a742eab6c9d0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.0.2"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">HOME</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">HOME</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            search
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-hexo%E5%AE%89%E8%A3%85"><span class="toc-text">0x01 hexo安装</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-github%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="toc-text">0x02 github创建项目</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-%E4%B8%BB%E9%A2%98%E5%8F%8A%E9%85%8D%E7%BD%AE"><span class="toc-text">0x03 主题及配置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x04-%E7%BB%91%E5%AE%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%9F%9F%E5%90%8D"><span class="toc-text">0x04 绑定自定义域名</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-helloworld-again" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">helloworld again</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2020.08.17</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>le31ei</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/%E6%9D%82%E6%96%87/">杂文</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>重新整理了下博客内容，删除了以前的文章，换了个简洁的主题。学习还是要养成输出的习惯，学完一块内容后，做个总结，回头看看自己过程也是很好的事情。</p>
+<p>本文记录一下github pages搭建的过程。</p>
+<h1 id="0x01-hexo安装"><a href="#0x01-hexo安装" class="headerlink" title="0x01 hexo安装"></a>0x01 hexo安装</h1><p>npm等环境安装不再详述。</p>
+<p>直接上命令：<code>npm install -g hexo</code></p>
+<p>初始化命令：<code>hexo init</code>，生成基本的结构</p>
+<p><img src="./image-20200817154147163.png" alt="image-20200817154147163"></p>
+<h1 id="0x02-github创建项目"><a href="#0x02-github创建项目" class="headerlink" title="0x02 github创建项目"></a>0x02 github创建项目</h1><p>创建<code>username.github.io</code>名称的项目即可，对应的github pages就是这个</p>
+<p>blog目录下设置git全局参数:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;name&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;email&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="0x03-主题及配置"><a href="#0x03-主题及配置" class="headerlink" title="0x03 主题及配置"></a>0x03 主题及配置</h1><p>修改<code>_config.yml</code>文件deploy，设置如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> </span><br><span class="line">    <span class="attr">github:</span> <span class="string">https://github.com/le31ei/le31ei.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+
+<p>选择的主题是<code>https://github.com/forsigner/fexo</code>，够简洁的主题</p>
+<p>替换的方法比较简单，参考文档<code>http://forsigner.com/2016/03/10/fexo-doc-zh-cn/</code></p>
+<p>这里记录下常用的命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 升级</span></span><br><span class="line">$ <span class="built_in">cd</span> themes/fexo</span><br><span class="line">$ git commit -am <span class="string">&#x27;update&#x27;</span></span><br><span class="line">$ git pull</span><br><span class="line"><span class="comment"># 启用</span></span><br><span class="line"><span class="comment"># 打开博客根目录的 _config.yml 设为 theme: fexo</span></span><br></pre></td></tr></table></figure>
+
+<p>主题的配置路径<code>themes/fexo/_config.yml</code>，具体配置参数可以参考文档自己做细微的调整。</p>
+<p>其他hexo常见命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 新建测试页面</span></span><br><span class="line">hexo n <span class="string">&quot;test&quot;</span></span><br><span class="line"><span class="comment"># 部署</span></span><br><span class="line">hexo g -d</span><br><span class="line"><span class="comment"># 新建草稿</span></span><br><span class="line">hexo new draft <span class="string">&quot;new draft&quot;</span></span><br><span class="line"><span class="comment"># 草稿变成文章</span></span><br><span class="line">hexo publish [layout] &lt;filename&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="0x04-绑定自定义域名"><a href="#0x04-绑定自定义域名" class="headerlink" title="0x04 绑定自定义域名"></a>0x04 绑定自定义域名</h1><p>需要添加CNAME，将自己的域名填写到CNAME文件中，DNS解析选择CNAME解析。</p>
+<p><img src="./image-20200817155628007.png" alt="image-20200817155628007"></p>
+<p>以上就是博客搭建过程。搭建过程中也尝试了给博客提提速，github国内访问实在太慢，而且百度爬虫也会403。奈何尝试过CDN（需要备案放弃）、coding.net的pages、gitee pages，各种复杂配置，还是回到了最简单的方式，直接github访问省时省力。</p>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="hide pull-left" href="/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              search
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+    <div id="comment" class="vcomment" ></div>
+    <script>
+        var notify = 'true' == true ? true : false;
+        var verify = 'false' == true ? true : false;
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+            return GUEST_INFO.indexOf(item) > -1
+        });
+        guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+        window.valine = new Valine({
+            el: '.vcomment',
+            notify: notify,
+            verify: verify,
+            appId: "UF41K2V1YdIabj0Hd9TXLuV9-gzGzoHsz",
+            appKey: "EfXnzBbp4gTCI4U99bctAjO8",
+            avatar:'mm',
+            placeholder: "Just go",
+            guest_info:guest_info,
+            pageSize:'10'
+        });
+    </script>
+  
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
