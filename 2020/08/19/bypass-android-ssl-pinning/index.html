@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>bypass android ssl pinning | blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="app测试," />
+  
+
+  <meta name="description" content="在做app测试的时候，经常有抓不到包的情况，即使是导入了burp证书后，仍然无法抓取https的数据包，这种情况一般是遇到了ssl pinning。 0x01 替换系统证书在android 7.0以前，系统导入burp证书为用户权限能够绕过部分未做证书校验的APP，但是7.0及以后应用默认不再信任用户证书，导入burp证书后仍然会提示证书错误，抓不到https的包。 这种情况下一般采用替换系统证书">
+<meta property="og:type" content="article">
+<meta property="og:title" content="bypass android ssl pinning">
+<meta property="og:url" content="http://blog.le31ei.top/2020/08/19/bypass-android-ssl-pinning/index.html">
+<meta property="og:site_name" content="blog">
+<meta property="og:description" content="在做app测试的时候，经常有抓不到包的情况，即使是导入了burp证书后，仍然无法抓取https的数据包，这种情况一般是遇到了ssl pinning。 0x01 替换系统证书在android 7.0以前，系统导入burp证书为用户权限能够绕过部分未做证书校验的APP，但是7.0及以后应用默认不再信任用户证书，导入burp证书后仍然会提示证书错误，抓不到https的包。 这种情况下一般采用替换系统证书">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.le31ei.top/2020/08/19/bypass-android-ssl-pinning/image-20200820102936183.png">
+<meta property="og:image" content="http://blog.le31ei.top/2020/08/19/bypass-android-ssl-pinning/image-20200820104447189.png">
+<meta property="article:published_time" content="2020-08-19T09:01:59.000Z">
+<meta property="article:modified_time" content="2020-08-20T03:09:48.958Z">
+<meta property="article:author" content="le31ei">
+<meta property="article:tag" content="app测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.le31ei.top/2020/08/19/bypass-android-ssl-pinning/image-20200820102936183.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'G-4RKHRGTSTZ', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?ccc85f1c0e860658bc30a742eab6c9d0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.0.2"><link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">HOME</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">HOME</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            search
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-%E6%9B%BF%E6%8D%A2%E7%B3%BB%E7%BB%9F%E8%AF%81%E4%B9%A6"><span class="toc-text">0x01 替换系统证书</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-Magisk-Always-Trust-User"><span class="toc-text">0x02 Magisk+Always Trust User</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-JustTrustMe"><span class="toc-text">0x03 JustTrustMe</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x04-%E5%88%B7%E6%9C%BA"><span class="toc-text">0x04 刷机</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-bypass-android-ssl-pinning" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">bypass android ssl pinning</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2020.08.19</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>le31ei</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/Pentest/">Pentest</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>在做app测试的时候，经常有抓不到包的情况，即使是导入了burp证书后，仍然无法抓取https的数据包，这种情况一般是遇到了ssl pinning。</p>
+<h1 id="0x01-替换系统证书"><a href="#0x01-替换系统证书" class="headerlink" title="0x01 替换系统证书"></a>0x01 替换系统证书</h1><p>在android 7.0以前，系统导入burp证书为用户权限能够绕过部分未做证书校验的APP，但是7.0及以后应用默认不再信任用户证书，导入burp证书后仍然会提示证书错误，抓不到https的包。</p>
+<p>这种情况下一般采用替换系统证书的方法，原理是将burp的证书直接导入为系统证书，前提是手机需要ROOT权限。导入后系统会把burp当成系统证书，自然就能中间人代理https流量了。</p>
+<p>具体步骤如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 下载burp证书，导出为cacert.der，然后转换为pem格式</span></span><br><span class="line">openssl x509 -inform DER -outform PEM -in cacert.der -out cacert.pem</span><br><span class="line"><span class="meta">#</span><span class="bash"> 生成<span class="built_in">hash</span>，得到一个<span class="built_in">hash</span>  比如：9a5ba575</span></span><br><span class="line">openssl x509 -subject_hash_old -in cacert.pem</span><br><span class="line">mv cacert.pem 9a5ba575.0</span><br><span class="line"><span class="meta">#</span><span class="bash"> 上传为系统证书</span></span><br><span class="line">adb push 9a5ba575.0 /system/etc/security/cacerts/</span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果在push过程中显示<span class="built_in">readonly</span> system，则需要remount</span></span><br><span class="line">adb disable-verity</span><br><span class="line">adb root</span><br><span class="line">adb remount</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>系统证书的目录是：/system/etc/security/cacerts/ 每个证书的命名规则为：. Certificate_Hash 表示证书文件的 hash 值，Number 是为了防止证书文件的 hash 值一致而增加的后缀; 证书的 hash 值可以由命令计算出来，在终端输入 openssl x509 -subject_hash_old -in ，其中 Certificate_File 为证书路径，将证书重命名为 hash.0 放入系统证书目录，之后你就可以正常抓包了。</p>
+</blockquote>
+<h1 id="0x02-Magisk-Always-Trust-User"><a href="#0x02-Magisk-Always-Trust-User" class="headerlink" title="0x02 Magisk+Always Trust User"></a>0x02 Magisk+Always Trust User</h1><p>上述应用不认用户证书的解决方案还有一种，就是magisk加上<a target="_blank" rel="noopener" href="https://github.com/NVISO-BE/MagiskTrustUserCerts">MagiskTrustUserCerts</a>。magisk类似于xposed框架，能够hook系统函数，<code>AlwaysTrustUserCerts</code>是该工具的一个插件，能够将用户导入的证书变成系统证书。</p>
+<p><img src="./image-20200820102936183.png" alt="image-20200820102936183.png"></p>
+<p>在安装好后，进行正常的证书导入操作，证书就能直接导入到系统证书里边，较第一种方式方便许多。</p>
+<p>该种方式可以通过recovery将Magisk刷入未root的系统中，可以绕过一些检测了root权限的应用。</p>
+<h1 id="0x03-JustTrustMe"><a href="#0x03-JustTrustMe" class="headerlink" title="0x03 JustTrustMe"></a>0x03 JustTrustMe</h1><p>在经过上述两种方法后，大部分的app都能抓到包了，但是还是能碰到少数情况仍然抓不到包，应用连不上网的情况。这种情况一般都是ssl pinning的场景。</p>
+<p>应用中的代码对ssl证书进行了锁定。一般这种方法的思路就是通过xposed或者frida等hook框架对相应的证书验证代码hook进行绕过。一般app通常采用通用的解决方案，而xposed框架的JustTrustMe模块基本覆盖了这些类型，故本文不再探讨基于frida的自定义hook函数。</p>
+<p><strong>安装</strong>：</p>
+<p>安装方式比较简单，直接下载apk模块文件<a target="_blank" rel="noopener" href="https://github.com/Fuzion24/JustTrustMe">JustTrustMe</a>，按照通用的apk文件安装方式。然后在Xposed框架中进行激活，然后重启生效。</p>
+<p><img src="./image-20200820104447189.png" alt="image-20200820104447189"></p>
+<p>安装好后，再抓包，应用就能正常运行并抓取https数据包了。</p>
+<h1 id="0x04-刷机"><a href="#0x04-刷机" class="headerlink" title="0x04 刷机"></a>0x04 刷机</h1><p>在进行上述步骤操作时会碰到一些刷机问题，这里简单记录一下。</p>
+<p><strong>BL锁</strong>：现在的手机一般有BL锁（BootLoader锁），如果需要刷入第三方recovery或者第三方ROM</p>
+<p><strong>FastBoot</strong>：线刷时需要进入的模式，通过fastboot命令可以刷入recovery。</p>
+<p>fastboot刷入的命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看设备</span></span><br><span class="line">fastboot devices</span><br><span class="line"><span class="meta">#</span><span class="bash"> 刷入recovery</span></span><br><span class="line">fastboot flash recovery recovery.img</span><br><span class="line"><span class="meta">#</span><span class="bash"> 从新的boot启动</span></span><br><span class="line">fastboot boot recovery.img</span><br></pre></td></tr></table></figure>
+
+<p>附件是windows版本的fastboot工具：<a href="./fastboot.exe">fastboot.exe</a></p>
+<p><strong>TWRP</strong>：第三方recovery，相对于官方的recovery增加了很多功能，可通过该recovery进行卡刷升级等。可刷入xposed框架、Magisk框架等</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol>
+<li><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/127847550">Android应用中https SSL pinning以及绕过的方法介绍</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.mcafee.com/enterprise/en-us/assets/misc/ms-android-7-10-ssl-pinning-bypass.pdf">Android SSL Pinning Bypass: Android 7-10</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/Fuzion24/JustTrustMe">JustTrustMe</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/2440">SSL Pinning Practice</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/2336">Frida.Android.Practice (ssl unpinning)</a></p>
+</li>
+</ol>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2020/08/18/ms17010%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              search
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+    <div id="comment" class="vcomment" ></div>
+    <script>
+        var notify = 'true' == true ? true : false;
+        var verify = 'false' == true ? true : false;
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+            return GUEST_INFO.indexOf(item) > -1
+        });
+        guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+        window.valine = new Valine({
+            el: '.vcomment',
+            notify: notify,
+            verify: verify,
+            appId: "UF41K2V1YdIabj0Hd9TXLuV9-gzGzoHsz",
+            appKey: "EfXnzBbp4gTCI4U99bctAjO8",
+            avatar:'mm',
+            placeholder: "Just go",
+            guest_info:guest_info,
+            pageSize:'10'
+        });
+    </script>
+  
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
