@@ -246,13 +246,13 @@ ga('send', 'pageview');
 <p>该工具的利用成功率并不高，对目标系统版本要求较高，需要为win7或者winserver2008 r2，但结合msf的meterpreter进行流量代理，先在内网中过一遍c段倒是挺好的。</p>
 <h1 id="0x02-fcstools"><a href="#0x02-fcstools" class="headerlink" title="0x02  fcstools"></a>0x02  fcstools</h1><p>适用于在内网中，服务器无法出外网或者反弹到shell的情况，能够直接执行命令，如在目标机器添加用户等。一般msf等工具都是直接反弹meterpreter，如果目标机在无法出外网或者反弹的情况就只能使用这个离线工具。</p>
 <p>该工具需要配合DLL生成工具进行，替换掉x86或者x64文件，fcstools就会执行相关的dll命令。</p>
-<p><img src="./image-20200818130214827.png" alt="image-20200818130214827"></p>
+<p><img src="/2020/08/18/ms17010%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/image-20200818130214827.png" alt="image-20200818130214827"></p>
 <p>生成dll后，替换fcstools里面的x86或者x64文件，<strong>注意添加用户时，密码要满足系统的复杂度要求</strong>。</p>
-<p>.<img src="./image-20200818130320705.png" alt="image-20200818130320705"></p>
+<p>.<img src="/2020/08/18/ms17010%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/image-20200818130320705.png" alt="image-20200818130320705"></p>
 <p>然后就可以运行工具进行攻击了，</p>
-<p><img src="./image-20200818130946475.png" alt="image-20200818130946475"></p>
+<p><img src="/2020/08/18/ms17010%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/image-20200818130946475.png" alt="image-20200818130946475"></p>
 <p>eternalblue工具种下后门后，点击doublepulsar，利用后门执行dll里面的命令</p>
-<p><img src="./image-20200818131312293.png" alt="image-20200818131312293"></p>
+<p><img src="/2020/08/18/ms17010%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/image-20200818131312293.png" alt="image-20200818131312293"></p>
 <h1 id="0x03-zzz-exploit-py"><a href="#0x03-zzz-exploit-py" class="headerlink" title="0x03 zzz_exploit.py"></a>0x03 zzz_exploit.py</h1><p>github地址：<a target="_blank" rel="noopener" href="https://github.com/worawit/MS17-010">https://github.com/worawit/MS17-010</a></p>
 <p>该脚本有几个关键点需要注意：</p>
 <ol>

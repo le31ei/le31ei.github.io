@@ -243,14 +243,14 @@ ga('send', 'pageview');
 <p>系统证书的目录是：/system/etc/security/cacerts/ 每个证书的命名规则为：. Certificate_Hash 表示证书文件的 hash 值，Number 是为了防止证书文件的 hash 值一致而增加的后缀; 证书的 hash 值可以由命令计算出来，在终端输入 openssl x509 -subject_hash_old -in ，其中 Certificate_File 为证书路径，将证书重命名为 hash.0 放入系统证书目录，之后你就可以正常抓包了。</p>
 </blockquote>
 <h1 id="0x02-Magisk-Always-Trust-User"><a href="#0x02-Magisk-Always-Trust-User" class="headerlink" title="0x02 Magisk+Always Trust User"></a>0x02 Magisk+Always Trust User</h1><p>上述应用不认用户证书的解决方案还有一种，就是magisk加上<a target="_blank" rel="noopener" href="https://github.com/NVISO-BE/MagiskTrustUserCerts">MagiskTrustUserCerts</a>。magisk类似于xposed框架，能够hook系统函数，<code>AlwaysTrustUserCerts</code>是该工具的一个插件，能够将用户导入的证书变成系统证书。</p>
-<p><img src="./image-20200820102936183.png" alt="image-20200820102936183.png"></p>
+<p><img src="/2020/08/19/bypass-android-ssl-pinning/image-20200820102936183.png" alt="image-20200820102936183.png"></p>
 <p>在安装好后，进行正常的证书导入操作，证书就能直接导入到系统证书里边，较第一种方式方便许多。</p>
 <p>该种方式可以通过recovery将Magisk刷入未root的系统中，可以绕过一些检测了root权限的应用。</p>
 <h1 id="0x03-JustTrustMe"><a href="#0x03-JustTrustMe" class="headerlink" title="0x03 JustTrustMe"></a>0x03 JustTrustMe</h1><p>在经过上述两种方法后，大部分的app都能抓到包了，但是还是能碰到少数情况仍然抓不到包，应用连不上网的情况。这种情况一般都是ssl pinning的场景。</p>
 <p>应用中的代码对ssl证书进行了锁定。一般这种方法的思路就是通过xposed或者frida等hook框架对相应的证书验证代码hook进行绕过。一般app通常采用通用的解决方案，而xposed框架的JustTrustMe模块基本覆盖了这些类型，故本文不再探讨基于frida的自定义hook函数。</p>
 <p><strong>安装</strong>：</p>
 <p>安装方式比较简单，直接下载apk模块文件<a target="_blank" rel="noopener" href="https://github.com/Fuzion24/JustTrustMe">JustTrustMe</a>，按照通用的apk文件安装方式。然后在Xposed框架中进行激活，然后重启生效。</p>
-<p><img src="./image-20200820104447189.png" alt="image-20200820104447189"></p>
+<p><img src="/2020/08/19/bypass-android-ssl-pinning/image-20200820104447189.png" alt="image-20200820104447189"></p>
 <p>安装好后，再抓包，应用就能正常运行并抓取https数据包了。</p>
 <h1 id="0x04-刷机"><a href="#0x04-刷机" class="headerlink" title="0x04 刷机"></a>0x04 刷机</h1><p>在进行上述步骤操作时会碰到一些刷机问题，这里简单记录一下。</p>
 <p><strong>BL锁</strong>：现在的手机一般有BL锁（BootLoader锁），如果需要刷入第三方recovery或者第三方ROM</p>
