@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>vue2学习笔记3 | blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="vue," />
+  
+
+  <meta name="description" content="1. vue-router 创建路由组件 配置路由映射: 组件和路径映射关系 使用路由: 通过&lt;router-link&gt;和&lt;router-view&gt;  12345678910111213141516171819202122232425262728import Vue from &amp;#x27;vue&amp;#x27;import VueRouter from &amp;#x27;vue-ro">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue2学习笔记3">
+<meta property="og:url" content="http://blog.le31ei.top/2021/01/28/vue2%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B03/index.html">
+<meta property="og:site_name" content="blog">
+<meta property="og:description" content="1. vue-router 创建路由组件 配置路由映射: 组件和路径映射关系 使用路由: 通过&lt;router-link&gt;和&lt;router-view&gt;  12345678910111213141516171819202122232425262728import Vue from &amp;#x27;vue&amp;#x27;import VueRouter from &amp;#x27;vue-ro">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-28T08:08:06.000Z">
+<meta property="article:modified_time" content="2021-01-28T08:08:06.668Z">
+<meta property="article:author" content="le31ei">
+<meta property="article:tag" content="vue">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'G-4RKHRGTSTZ', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?ccc85f1c0e860658bc30a742eab6c9d0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+
+<meta name="generator" content="Hexo 5.0.2"><link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">HOME</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">HOME</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            search
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-vue-router"><span class="toc-text">1. vue-router</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-promise"><span class="toc-text">2. promise</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-vuex"><span class="toc-text">3. vuex</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-vue2学习笔记3" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">vue2学习笔记3</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2021.01.28</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>le31ei</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/Program/">Program</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="1-vue-router"><a href="#1-vue-router" class="headerlink" title="1. vue-router"></a>1. vue-router</h1><ol>
+<li>创建路由组件</li>
+<li>配置路由映射: 组件和路径映射关系</li>
+<li>使用路由: 通过<code>&lt;router-link&gt;</code>和<code>&lt;router-view&gt;</code></li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> VueRouter <span class="keyword">from</span> <span class="string">&#x27;vue-router&#x27;</span></span><br><span class="line"><span class="keyword">import</span> Home <span class="keyword">from</span> <span class="string">&quot;@/components/Home&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> About <span class="keyword">from</span> <span class="string">&quot;@/components/About&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Vue.use(VueRouter)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> routes = [</span><br><span class="line">  &#123;</span><br><span class="line">    path: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">    redirect: <span class="string">&#x27;/home&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    path: <span class="string">&#x27;/home&#x27;</span>,</span><br><span class="line">    component: Home</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    path: <span class="string">&#x27;/about&#x27;</span>,</span><br><span class="line">    component: About</span><br><span class="line">  &#125;,</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> router = <span class="keyword">new</span> VueRouter(&#123;</span><br><span class="line">  routes,</span><br><span class="line">  mode: <span class="string">&#x27;history&#x27;</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> router</span><br></pre></td></tr></table></figure>
+
+<p><strong>路由模式更换</strong></p>
+<p>默认格式：<code>http://localhost:8080/#/home</code></p>
+<p>history模式: <code>http://localhost:8080/home</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> router = <span class="keyword">new</span> VueRouter(&#123;</span><br><span class="line">  routes,</span><br><span class="line">  mode: <span class="string">&#x27;history&#x27;</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>router-link属性</strong></p>
+<ol>
+<li>tag属性：可以指定<code>&lt;router-link&gt;</code>渲染成什么组件，比如<code>&lt;li&gt;</code></li>
+<li>to属性：跳转到某个url</li>
+<li>replace属性：替换模式，不能使用浏览器前进后退按钮</li>
+<li>Active-class属性：选中的router-link有<code>router-link-active</code>的class属性，将<code>router-link-active</code>更名</li>
+</ol>
+<p><strong>代码跳转路由</strong></p>
+<p><code>this.$router.push(&#39;/home&#39;)</code></p>
+<p><code>this.$router.replace(&#39;/home&#39;)</code></p>
+<p><strong>动态路由</strong></p>
+<p>获取路由参数：<code>this.$route.params.id</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> routes = [</span><br><span class="line">  &#123;</span><br><span class="line">    path: <span class="string">&#x27;/user/:id&#x27;</span>,</span><br><span class="line">    component: User</span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p><strong>懒加载</strong></p>
+<p>当用户访问到路由的时候才加载响应的组件，更加高效</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  path: <span class="string">&#x27;/home&#x27;</span>,</span><br><span class="line">  component: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;../components/Home&#x27;</span>)</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p><strong>路由嵌套</strong></p>
+<ol>
+<li>创建对应子组件，并在路由上配置对应的子路由</li>
+<li>在组件内部使用<code>&lt;router-view&gt;</code>标签</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  path: <span class="string">&#x27;/home&#x27;</span>,</span><br><span class="line">  component: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;../components/Home&#x27;</span>),</span><br><span class="line">  children: [</span><br><span class="line">    &#123;</span><br><span class="line">      path: <span class="string">&#x27;news&#x27;</span>,</span><br><span class="line">      component: HomeNews</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      path: <span class="string">&#x27;message&#x27;</span>,</span><br><span class="line">      component: HomeMessage</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;,</span><br><span class="line">  <span class="comment">// 在父组件中要加上&lt;router-view&gt;</span></span><br><span class="line">   &lt;router-link to=<span class="string">&quot;/home/news&quot;</span>&gt;新闻&lt;/router-link&gt;</span><br><span class="line">&lt;router-link to=<span class="string">&quot;/home/message&quot;</span>&gt;消息&lt;/router-link&gt;</span><br><span class="line">&lt;router-view&gt;&lt;/router-view&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>参数传递</strong></p>
+<p>query方式:profile?id=1：</p>
+<p><code>&lt;router-link :to=&quot;&#123;path: &#39;/profile&#39;, query: &#123;id: &#39;1&#39;&#125;&#125;&quot;&gt;Profile&lt;/router-link&gt;</code></p>
+<p>js方式：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">this</span>.$router.push(&#123;</span><br><span class="line">  path: <span class="string">&#x27;profile&#x27;</span>,</span><br><span class="line">  query: &#123;</span><br><span class="line">    name: <span class="string">&#x27;1&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>取值方式：<code>this.$router.query.id</code></p>
+<p>路径方式：</p>
+<p><code>&lt;router-link :to=&quot;/user/+userid&quot;&gt;用户&lt;/router-link&gt;</code></p>
+<p>js方式：</p>
+<p><code>this.$router.push(&#39;/profile&#39;+ this.userid)</code></p>
+<p><strong>导航守卫</strong></p>
+<p>title更换为对应页面的title</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// routes</span></span><br><span class="line">      &#123;</span><br><span class="line">        path: <span class="string">&#x27;message&#x27;</span>,</span><br><span class="line">        component: HomeMessage,</span><br><span class="line">        meta:&#123;</span><br><span class="line">          title: <span class="string">&#x27;message&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">router.beforeEach(<span class="function">(<span class="params">to, <span class="keyword">from</span>, next</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">document</span>.title = to.meta.title</span><br><span class="line">  next()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h1 id="2-promise"><a href="#2-promise" class="headerlink" title="2. promise"></a>2. promise</h1><p>异步编程解决方案</p>
+<p>promise本身是一个类，传入的箭头函数参数resolve和reject也是两个函数，成功的时候调用resolve，失败的时候调用reject，</p>
+<p>成功的处理代码写在then中，失败的代码写在catch中</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;请求&#x27;</span>)</span><br><span class="line">        <span class="comment">//resolve()    //调用resolve直接跳到.then()</span></span><br><span class="line">        reject()     <span class="comment">//调用reject，直接调到catch()</span></span><br><span class="line">    &#125;, <span class="number">1000</span>)</span><br><span class="line">&#125;).then(<span class="function">() =&gt;</span> &#123;    <span class="comment">// then可以直接传入两个函数，而省略掉catch</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;success&#x27;</span>)</span><br><span class="line"></span><br><span class="line">&#125;).catch(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;failed&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>三种状态</strong></p>
+<p>pending：等待状态，比如正在进行网络请求，或者定时器没有到指定时间</p>
+<p>Fulfill: 满足状态，比如主动调用了resolve，就处于该状态，并且回调.then()</p>
+<p>reject: 拒绝状态，当我们主动回调了reject时，就处于该状态，并且回调.catch()</p>
+<p><strong>链式调用</strong></p>
+<p>promise可以直接省略</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">()=&gt;</span> &#123;</span><br><span class="line">        resolve(<span class="string">&#x27;aaa&#x27;</span>)</span><br><span class="line">    &#125;, <span class="number">1000</span>)</span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(res)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Promise</span>.resolve(res+ <span class="string">&#x27;222&#x27;</span>)</span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(res)</span><br><span class="line">    <span class="keyword">return</span> res+<span class="string">&#x27;3333&#x27;</span>  <span class="comment">// 省略promise的resolve，直接调用then对结果进行处理</span></span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(res)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>等待同步请求: promise.all</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.all([</span><br><span class="line">    <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">            resolve(<span class="string">&#x27;请求1&#x27;</span>)</span><br><span class="line">        &#125;, <span class="number">1000</span>)</span><br><span class="line">    &#125;),</span><br><span class="line">    <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">            <span class="comment">//resolve(&#x27;请求2&#x27;)</span></span><br><span class="line">            reject(<span class="string">&#x27;请求2失败&#x27;</span>)</span><br><span class="line">        &#125;, <span class="number">2000</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">]).then(<span class="function"><span class="params">results</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(results[<span class="number">0</span>])</span><br><span class="line">    <span class="built_in">console</span>.log(results[<span class="number">1</span>])</span><br><span class="line">&#125;).catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(err)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-vuex"><a href="#3-vuex" class="headerlink" title="3. vuex"></a>3. vuex</h1><p>状态管理模式</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> Vuex <span class="keyword">from</span> <span class="string">&#x27;vuex&#x27;</span></span><br><span class="line"></span><br><span class="line">Vue.use(Vuex)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> store = <span class="keyword">new</span> Vuex.Store(&#123;</span><br><span class="line">  state: &#123;  <span class="comment">// 定义要存放的数据</span></span><br><span class="line">    counter: <span class="number">1000</span></span><br><span class="line">  &#125;,</span><br><span class="line">  mutations: &#123;  <span class="comment">// 定义要怎么修改state的方法</span></span><br><span class="line">    <span class="function"><span class="title">increament</span>(<span class="params">state</span>)</span>&#123;</span><br><span class="line">      state.counter ++</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="function"><span class="title">decreament</span>(<span class="params">state</span>)</span>&#123;</span><br><span class="line">      state.counter --</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  actions: &#123;</span><br><span class="line"></span><br><span class="line">  &#125;,</span><br><span class="line">  getters: &#123;</span><br><span class="line"></span><br><span class="line">  &#125;,</span><br><span class="line">  modules: &#123;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> store</span><br></pre></td></tr></table></figure>
+
+<p>调用的时候需要通过commit进行调用</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">this</span>.$store.commit(<span class="string">&#x27;increament&#x27;</span>, )</span><br><span class="line"><span class="comment">// commit传值</span></span><br><span class="line"><span class="built_in">this</span>.$store.commit(<span class="string">&#x27;increament&#x27;</span>, <span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>state</strong></p>
+<p>单一状态树，全部状体放在一个store里面</p>
+<p><strong>getters</strong></p>
+<p>对state的数据进行变形后输出，类似于计算属性</p>
+<p>调用方法：</p>
+<p><code>$store.getters.doubleCounter</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">getters: &#123;</span><br><span class="line">  <span class="function"><span class="title">doubleCounter</span>(<span class="params">state, getters</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> state.counter * state.counter</span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p><strong>响应式操作state</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Vue.set(state.info, <span class="string">&#x27;age&#x27;</span>, <span class="number">40</span>)</span><br><span class="line">Vue.delete(state.info, <span class="string">&#x27;age&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>mutations</strong></p>
+<p>只能存放同步操作，不能使用异步操作，存在异步操作使用actions</p>
+<p><strong>actions</strong></p>
+<p>存放异步操作，但是只能调用mutations里面的同步函数，对state进行操作</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">actions: &#123;</span><br><span class="line">  <span class="function"><span class="title">aUpdateInfo</span>(<span class="params">context</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      context.commit(<span class="string">&#x27;updateInfo&#x27;</span>)</span><br><span class="line">    &#125;, <span class="number">1000</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p>调用方法：<code>this.$store.dispatch(&#39;aUpdateInfo&#39;)</code></p>
+<p><strong>modules</strong></p>
+<p>对state中的数据进行分模块</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">modules: &#123;</span><br><span class="line">  a: &#123;</span><br><span class="line">    actions: &#123;&#125;,</span><br><span class="line">    mutations: &#123;&#125;,</span><br><span class="line">    getters: &#123;&#125;,</span><br><span class="line">    state: &#123;&#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2021/01/26/vue2%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B02/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              search
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+    <div id="comment" class="vcomment" ></div>
+    <script>
+        var notify = 'true' == true ? true : false;
+        var verify = 'false' == true ? true : false;
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+            return GUEST_INFO.indexOf(item) > -1
+        });
+        guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+        window.valine = new Valine({
+            el: '.vcomment',
+            notify: notify,
+            verify: verify,
+            appId: "UF41K2V1YdIabj0Hd9TXLuV9-gzGzoHsz",
+            appKey: "EfXnzBbp4gTCI4U99bctAjO8",
+            avatar:'mm',
+            placeholder: "Just go",
+            guest_info:guest_info,
+            pageSize:'10'
+        });
+    </script>
+  
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
