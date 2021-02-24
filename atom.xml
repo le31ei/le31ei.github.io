@@ -6,7 +6,7 @@
   <link href="http://blog.le31ei.top/atom.xml" rel="self"/>
   
   <link href="http://blog.le31ei.top/"/>
-  <updated>2021-02-22T06:19:55.286Z</updated>
+  <updated>2021-02-24T08:22:41.032Z</updated>
   <id>http://blog.le31ei.top/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>spf与邮件伪造</title>
+    <link href="http://blog.le31ei.top/2021/02/24/spf%E4%B8%8E%E9%82%AE%E4%BB%B6%E4%BC%AA%E9%80%A0/"/>
+    <id>http://blog.le31ei.top/2021/02/24/spf%E4%B8%8E%E9%82%AE%E4%BB%B6%E4%BC%AA%E9%80%A0/</id>
+    <published>2021-02-24T08:22:41.000Z</published>
+    <updated>2021-02-24T08:22:41.032Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="0x01-SPF"><a href="#0x01-SPF" class="headerlink" title="0x01 SPF"></a>0x01 SPF</h1><p>SPF，全称为 Sender Policy Framework，即发件人策略框架。目前基本上市面正在使用的邮箱产品均对SPF进行了校验。</p><p><strong>原理：</strong></p><p>SPF是一个DNS的TXT记录，定义了收到的邮件允许发送的ip范围。</p><p>例如使用<code>swaks</code>伪造邮件发送<code>swaks -t test@qq.com -f admin@qq.com</code>。该命令表示从<code>admin@qq.com</code>发送邮件到<code>test@qq.com</code>。qq邮箱在收到邮件后，会对<code>qq.com</code>的SPF记录进行校验，判断发送客户端的ip地址是否在SPF记录所包含的范围内。如图显示SPF校验失败。</p><p><img src="/2021/02/24/spf%E4%B8%8E%E9%82%AE%E4%BB%B6%E4%BC%AA%E9%80%A0/image-20210223162316539.png" alt="image-20210223162316539"></p><p>查询SPF的方法很简单，使用如下命令：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">nslookup -type=txt qq.com</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> output</span></span><br><span class="line">Server:        61.139.2.69</span><br><span class="line">Address:    61.139.2.69#53</span><br><span class="line"></span><br><span class="line">Non-authoritative answer:</span><br><span class="line">qq.com    text = &quot;v=spf1 include:spf.mail.qq.com -all&quot;</span><br><span class="line"></span><br><span class="line">Authoritative answers can be found from:</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>SPF语法比较简单</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">v=spf1 include:spf.mail.qq.com -all</span><br></pre></td></tr></table></figure><ol><li>v=spf1固定格式，目前spf只有第一版</li><li>include:spf.mail.qq.com表示引入spf.mail.qq.com的SPF记录，继续递归查询spf.mail.qq.com的记录</li></ol><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">➜ nslookup -type=txt spf.mail.qq.com</span><br><span class="line">Server:        61.139.2.69</span><br><span class="line">Address:    61.139.2.69#53</span><br><span class="line"></span><br><span class="line">Non-authoritative answer:</span><br><span class="line">spf.mail.qq.com    text = &quot;v=spf1 include:spf-a.mail.qq.com include:spf-b.mail.qq.com include:spf-c.mail.qq.com include:spf-d.mail.qq.com include:spf-e.mail.qq.com include:spf-f.mail.qq.com include:spf-g.mail.qq.com -all&quot;</span><br><span class="line"></span><br><span class="line">Authoritative answers can be found from:</span><br><span class="line"></span><br><span class="line">➜  ~ nslookup -type=txt spf-a.mail.qq.com</span><br><span class="line">Server:        61.139.2.69</span><br><span class="line">Address:    61.139.2.69#53</span><br><span class="line"></span><br><span class="line">Non-authoritative answer:</span><br><span class="line">spf-a.mail.qq.com    text = &quot;v=spf1 ip4:203.205.251.0/24 ip4:103.7.29.0/24 ip4:59.36.129.0/24 ip4:113.108.23.0/24 ip4:113.108.11.0/24 ip4:119.147.193.0/24 ip4:119.147.194.0/24 ip4:59.78.209.0/24 ip4:113.96.223.0/24 ip4:183.3.226.0/24 ip4:183.3.255.0/24 ip4:59.36.132.0/24 -all&quot;</span><br><span class="line"></span><br><span class="line">Authoritative answers can be found from:</span><br></pre></td></tr></table></figure><ol start="3"><li>-all表示拒绝所有，spf记录从左到右依次执行，允许后，其余所有拒绝</li></ol><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;+&quot;  Pass（通过）</span><br><span class="line">&quot;-&quot;  Fail（拒绝）</span><br><span class="line">&quot;~&quot;  Soft Fail（软拒绝）邮件将会被放入垃圾箱或做其他标记</span><br><span class="line">&quot;?&quot;  Neutral（中立）</span><br></pre></td></tr></table></figure><h1 id="0x02-邮件伪造"><a href="#0x02-邮件伪造" class="headerlink" title="0x02 邮件伪造"></a>0x02 邮件伪造</h1><p>市面上所有的邮箱平台均对SPF有相关校验，所以邮件伪造的关键点就是对SPF的绕过。</p><p>要绕过SPF除了相关的SPF记录配置错误之外，就只能通过SMTP代发的方式，伪造显示的邮件发件人来进行伪造。</p><p>具体使用如下命令：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">swaks --body &quot;test&quot; --header &quot;Subject:test&quot; --h-From: &#x27;test&lt;admin@qq.com&gt;&#x27; -f admin@le31ei.top -t le31ei@163.com --server smtp.mxhichina.com -au xxx -ap xxx -p 25 --header-X-Mailer 163.com --ehlo 163.com</span><br></pre></td></tr></table></figure><p><code>--header-X-Mailer</code>是为了伪造smtp中的X-Mailer参数，默认带有工具的相关参数，<strong>qq邮箱会直接放入垃圾箱</strong></p><p><img src="/2021/02/24/spf%E4%B8%8E%E9%82%AE%E4%BB%B6%E4%BC%AA%E9%80%A0/image-20210223165505391.png" alt="image-20210223165505391"></p><p>以上的方式对于gmail已经无效了，邮件不会显示在收件箱中。但QQ邮箱能正常接收，但是会提示由谁代发</p><p><img src="/2021/02/24/spf%E4%B8%8E%E9%82%AE%E4%BB%B6%E4%BC%AA%E9%80%A0/image-20210223165626191.png" alt="image-20210223165626191"></p><p>对于163邮箱，默认没有任何防护措施。</p><h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol><li><a href="https://bbs.ichunqiu.com/thread-55388-1-1.html">关于邮件伪造的一些新思路</a></li><li><a href="https://www.cnblogs.com/xiaozi/p/12906040.html">邮件伪造之SPF绕过的5种思路</a></li><li><a href="http://www.renfei.org/blog/introduction-to-spf.html">SPF 记录：原理、语法及配置方法简介</a></li><li><a href="https://help.aliyun.com/knowledge_detail/36771.html">邮箱域名的spf记录添加方法</a></li><li><a href="https://www.kitterman.com/spf/validate.html">SPF Record Testing Tools</a></li><li><a href="https://www.anquanke.com/post/id/218889">邮件伪造组合拳</a></li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;0x01-SPF&quot;&gt;&lt;a href=&quot;#0x01-SPF&quot; class=&quot;headerlink&quot; title=&quot;0x01 SPF&quot;&gt;&lt;/a&gt;0x01 SPF&lt;/h1&gt;&lt;p&gt;SPF，全称为 Sender Policy Framework，即发件人策略框架。目前基本上</summary>
+      
+    
+    
+    
+    <category term="RedTeam" scheme="http://blog.le31ei.top/categories/RedTeam/"/>
+    
+    
+    <category term="邮件伪造" scheme="http://blog.le31ei.top/tags/%E9%82%AE%E4%BB%B6%E4%BC%AA%E9%80%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>php临时文件</title>
