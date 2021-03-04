@@ -6,7 +6,7 @@
   <link href="http://blog.le31ei.top/atom.xml" rel="self"/>
   
   <link href="http://blog.le31ei.top/"/>
-  <updated>2021-02-24T08:22:41.032Z</updated>
+  <updated>2021-03-04T02:18:24.929Z</updated>
   <id>http://blog.le31ei.top/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>amazon S3 Bucket takeover</title>
+    <link href="http://blog.le31ei.top/2021/03/04/amazon-S3-Bucket-takeover/"/>
+    <id>http://blog.le31ei.top/2021/03/04/amazon-S3-Bucket-takeover/</id>
+    <published>2021-03-04T02:18:24.000Z</published>
+    <updated>2021-03-04T02:18:24.929Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="0x01-原理"><a href="#0x01-原理" class="headerlink" title="0x01 原理"></a>0x01 原理</h1><p>亚马逊S3对象存储，可以存放文件、图形等资源。通过api进行读写操作。近几年的网站开发存储资源文件如头像、上传文件等都基本开始采用对象存储的方式进行。</p><p>阿里云的对象存储对应简称为OSS，腾讯云的对象存储为COS。在使用对象存储时，首先会创建一个存储桶（bucket），在对应的存储桶中可以上传文件、创建文件夹等操作。同时还具备对应的权限管理。一般在开发过程中，创建好存储桶后，使用api接口对存储桶进行相关的操作。</p><p>生成新的存储桶时，系统会默认创建一个域名，类似于<code>http://bscw-web-admin-prod.s3-website.us-east-2.amazonaws.com</code>和<code>https://coding-pages-bucket.cos-website.ap-hongkong.myqcloud.com</code>，域名规则为子域为桶名称，然后加上对象存储的简称，然后加上地域的名字。例如，<code>coding-pages-bucket</code>是桶的名称，<code>cos-website</code>是对象存储的名称，<code>ap-hongkong</code>为对象存储所在的区域。</p><p>一般情况下，会配置一个CNAME的域名映射，将自己的域名映射到存储桶默认分配的域名，这样存储桶就能通过静态页面对资源进行展示了。</p><p>根据以上原理描述，可以对对象存储进行劫持，原理可以按照如下理解</p><blockquote><ol><li>在存储桶不再使用后，一般厂家会删除对应的存储桶，因为云存储是要收费的，但是域名对应存储桶域名的映射一般不会删除</li><li>所以在访问域名时候，会提示404，并且显示<code>NoSuchBucket</code></li><li>这时候域名访问的则是对存储桶映射的域名的访问。劫持时，则是在对应的云存储厂商上面注册一样存储桶，那么则可以劫持对应的域名了。</li><li>注册存储桶一共有两个要点，一是注册同样名字的存储桶，二是注册同一个地域的存储桶，目的就是保持生成的存储桶域名一致</li></ol></blockquote><p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210302162047983.png" alt="image-20210302162047983"></p><h1 id="0x02-实战S3劫持"><a href="#0x02-实战S3劫持" class="headerlink" title="0x02 实战S3劫持"></a>0x02 实战S3劫持</h1><h2 id="1-搜索"><a href="#1-搜索" class="headerlink" title="1. 搜索"></a>1. 搜索</h2><p>可以通过fofa进行搜索，语法是<code>body=&quot;BucketName&quot;</code>，搜索结果404的页面基本为废弃的存储桶。</p><p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210302164142709.png" alt="image-20210302164142709"></p><h2 id="2-注册存储桶并劫持"><a href="#2-注册存储桶并劫持" class="headerlink" title="2. 注册存储桶并劫持"></a>2. 注册存储桶并劫持</h2><p>根据搜索结果得到<code>BucketName</code></p><p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304095504174.png" alt="image-20210304095504174"></p><p>如果搜索出来的域名不为amazon自动分配的带有区域的域名，则需要通过域名查询CNAME的的映射，需要得到相关的区域。</p><p>创建存储桶时，输入对应的桶名称，选择对应的区域</p><p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100111218.png" alt="image-20210304100111218"></p><p>将阻止公开访问的勾去掉，确保能够公开访问</p><p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100143369.png" alt="image-20210304100143369"></p><p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100206795.png" alt="image-20210304100206795"></p><p>在该存储桶内上传对应的文件，一般传入index.html</p><p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100302844.png" alt="image-20210304100302844"></p><p>此时访问对应的域名，已经显示AccessDenied了，证明已经生效了。但是由于访问权限问题，导致在公开访问时，会显示访问拒绝，后面仅需要设置对应的权限即可。</p><p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100356886.png" alt="image-20210304100356886"></p><p>在对应文件（index.html）的<code>访问控制列表(ACL)</code>中，将访问权限打开</p><p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100911928.png" alt="image-20210304100911928"></p><p>最后一步，因为是静态网站，需要在存储桶属性里面将静态网站托管的权限打开</p><p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304101017134.png" alt="image-20210304101017134"></p><p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304101706843.png" alt="image-20210304101706843"></p><p>最后即可劫持成功</p><h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol><li><a href="https://blog.securelayer7.net/aws-penetration-testing-for-s3-bucket-service-basics-security/">https://blog.securelayer7.net/aws-penetration-testing-for-s3-bucket-service-basics-security/</a></li><li><a href="https://blog.securelayer7.net/hands-on-aws-s3-bucket-account-takeover-vulnerability/">https://blog.securelayer7.net/hands-on-aws-s3-bucket-account-takeover-vulnerability/</a></li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;0x01-原理&quot;&gt;&lt;a href=&quot;#0x01-原理&quot; class=&quot;headerlink&quot; title=&quot;0x01 原理&quot;&gt;&lt;/a&gt;0x01 原理&lt;/h1&gt;&lt;p&gt;亚马逊S3对象存储，可以存放文件、图形等资源。通过api进行读写操作。近几年的网站开发存储资源文件如</summary>
+      
+    
+    
+    
+    <category term="Pentest" scheme="http://blog.le31ei.top/categories/Pentest/"/>
+    
+    
+    <category term="takeover" scheme="http://blog.le31ei.top/tags/takeover/"/>
+    
+  </entry>
   
   <entry>
     <title>spf与邮件伪造</title>

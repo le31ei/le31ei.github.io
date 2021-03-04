@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>amazon S3 Bucket takeover | blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="takeover," />
+  
+
+  <meta name="description" content="0x01 原理亚马逊S3对象存储，可以存放文件、图形等资源。通过api进行读写操作。近几年的网站开发存储资源文件如头像、上传文件等都基本开始采用对象存储的方式进行。 阿里云的对象存储对应简称为OSS，腾讯云的对象存储为COS。在使用对象存储时，首先会创建一个存储桶（bucket），在对应的存储桶中可以上传文件、创建文件夹等操作。同时还具备对应的权限管理。一般在开发过程中，创建好存储桶后，使用api">
+<meta property="og:type" content="article">
+<meta property="og:title" content="amazon S3 Bucket takeover">
+<meta property="og:url" content="http://blog.le31ei.top/2021/03/04/amazon-S3-Bucket-takeover/index.html">
+<meta property="og:site_name" content="blog">
+<meta property="og:description" content="0x01 原理亚马逊S3对象存储，可以存放文件、图形等资源。通过api进行读写操作。近几年的网站开发存储资源文件如头像、上传文件等都基本开始采用对象存储的方式进行。 阿里云的对象存储对应简称为OSS，腾讯云的对象存储为COS。在使用对象存储时，首先会创建一个存储桶（bucket），在对应的存储桶中可以上传文件、创建文件夹等操作。同时还具备对应的权限管理。一般在开发过程中，创建好存储桶后，使用api">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.le31ei.top/2021/03/04/amazon-S3-Bucket-takeover/image-20210302162047983.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/03/04/amazon-S3-Bucket-takeover/image-20210302164142709.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/03/04/amazon-S3-Bucket-takeover/image-20210304095504174.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100111218.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100143369.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100206795.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100302844.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100356886.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100911928.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/03/04/amazon-S3-Bucket-takeover/image-20210304101017134.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/03/04/amazon-S3-Bucket-takeover/image-20210304101706843.png">
+<meta property="article:published_time" content="2021-03-04T02:18:24.000Z">
+<meta property="article:modified_time" content="2021-03-04T02:18:24.929Z">
+<meta property="article:author" content="le31ei">
+<meta property="article:tag" content="takeover">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.le31ei.top/2021/03/04/amazon-S3-Bucket-takeover/image-20210302162047983.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'G-4RKHRGTSTZ', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?ccc85f1c0e860658bc30a742eab6c9d0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+
+<meta name="generator" content="Hexo 5.0.2"><link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">HOME</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">HOME</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            search
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-%E5%8E%9F%E7%90%86"><span class="toc-text">0x01 原理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-%E5%AE%9E%E6%88%98S3%E5%8A%AB%E6%8C%81"><span class="toc-text">0x02 实战S3劫持</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%90%9C%E7%B4%A2"><span class="toc-text">1. 搜索</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%B3%A8%E5%86%8C%E5%AD%98%E5%82%A8%E6%A1%B6%E5%B9%B6%E5%8A%AB%E6%8C%81"><span class="toc-text">2. 注册存储桶并劫持</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-amazon-S3-Bucket-takeover" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">amazon S3 Bucket takeover</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2021.03.04</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>le31ei</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/Pentest/">Pentest</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="0x01-原理"><a href="#0x01-原理" class="headerlink" title="0x01 原理"></a>0x01 原理</h1><p>亚马逊S3对象存储，可以存放文件、图形等资源。通过api进行读写操作。近几年的网站开发存储资源文件如头像、上传文件等都基本开始采用对象存储的方式进行。</p>
+<p>阿里云的对象存储对应简称为OSS，腾讯云的对象存储为COS。在使用对象存储时，首先会创建一个存储桶（bucket），在对应的存储桶中可以上传文件、创建文件夹等操作。同时还具备对应的权限管理。一般在开发过程中，创建好存储桶后，使用api接口对存储桶进行相关的操作。</p>
+<p>生成新的存储桶时，系统会默认创建一个域名，类似于<code>http://bscw-web-admin-prod.s3-website.us-east-2.amazonaws.com</code>和<code>https://coding-pages-bucket.cos-website.ap-hongkong.myqcloud.com</code>，域名规则为子域为桶名称，然后加上对象存储的简称，然后加上地域的名字。例如，<code>coding-pages-bucket</code>是桶的名称，<code>cos-website</code>是对象存储的名称，<code>ap-hongkong</code>为对象存储所在的区域。</p>
+<p>一般情况下，会配置一个CNAME的域名映射，将自己的域名映射到存储桶默认分配的域名，这样存储桶就能通过静态页面对资源进行展示了。</p>
+<p>根据以上原理描述，可以对对象存储进行劫持，原理可以按照如下理解</p>
+<blockquote>
+<ol>
+<li>在存储桶不再使用后，一般厂家会删除对应的存储桶，因为云存储是要收费的，但是域名对应存储桶域名的映射一般不会删除</li>
+<li>所以在访问域名时候，会提示404，并且显示<code>NoSuchBucket</code></li>
+<li>这时候域名访问的则是对存储桶映射的域名的访问。劫持时，则是在对应的云存储厂商上面注册一样存储桶，那么则可以劫持对应的域名了。</li>
+<li>注册存储桶一共有两个要点，一是注册同样名字的存储桶，二是注册同一个地域的存储桶，目的就是保持生成的存储桶域名一致</li>
+</ol>
+</blockquote>
+<p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210302162047983.png" alt="image-20210302162047983"></p>
+<h1 id="0x02-实战S3劫持"><a href="#0x02-实战S3劫持" class="headerlink" title="0x02 实战S3劫持"></a>0x02 实战S3劫持</h1><h2 id="1-搜索"><a href="#1-搜索" class="headerlink" title="1. 搜索"></a>1. 搜索</h2><p>可以通过fofa进行搜索，语法是<code>body=&quot;BucketName&quot;</code>，搜索结果404的页面基本为废弃的存储桶。</p>
+<p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210302164142709.png" alt="image-20210302164142709"></p>
+<h2 id="2-注册存储桶并劫持"><a href="#2-注册存储桶并劫持" class="headerlink" title="2. 注册存储桶并劫持"></a>2. 注册存储桶并劫持</h2><p>根据搜索结果得到<code>BucketName</code></p>
+<p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304095504174.png" alt="image-20210304095504174"></p>
+<p>如果搜索出来的域名不为amazon自动分配的带有区域的域名，则需要通过域名查询CNAME的的映射，需要得到相关的区域。</p>
+<p>创建存储桶时，输入对应的桶名称，选择对应的区域</p>
+<p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100111218.png" alt="image-20210304100111218"></p>
+<p>将阻止公开访问的勾去掉，确保能够公开访问</p>
+<p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100143369.png" alt="image-20210304100143369"></p>
+<p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100206795.png" alt="image-20210304100206795"></p>
+<p>在该存储桶内上传对应的文件，一般传入index.html</p>
+<p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100302844.png" alt="image-20210304100302844"></p>
+<p>此时访问对应的域名，已经显示AccessDenied了，证明已经生效了。但是由于访问权限问题，导致在公开访问时，会显示访问拒绝，后面仅需要设置对应的权限即可。</p>
+<p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100356886.png" alt="image-20210304100356886"></p>
+<p>在对应文件（index.html）的<code>访问控制列表(ACL)</code>中，将访问权限打开</p>
+<p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304100911928.png" alt="image-20210304100911928"></p>
+<p>最后一步，因为是静态网站，需要在存储桶属性里面将静态网站托管的权限打开</p>
+<p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304101017134.png" alt="image-20210304101017134"></p>
+<p><img src="/2021/03/04/amazon-S3-Bucket-takeover/image-20210304101706843.png" alt="image-20210304101706843"></p>
+<p>最后即可劫持成功</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://blog.securelayer7.net/aws-penetration-testing-for-s3-bucket-service-basics-security/">https://blog.securelayer7.net/aws-penetration-testing-for-s3-bucket-service-basics-security/</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.securelayer7.net/hands-on-aws-s3-bucket-account-takeover-vulnerability/">https://blog.securelayer7.net/hands-on-aws-s3-bucket-account-takeover-vulnerability/</a></li>
+</ol>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2021/02/24/spf%E4%B8%8E%E9%82%AE%E4%BB%B6%E4%BC%AA%E9%80%A0/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              search
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+    <div id="comment" class="vcomment" ></div>
+    <script>
+        var notify = 'true' == true ? true : false;
+        var verify = 'false' == true ? true : false;
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+            return GUEST_INFO.indexOf(item) > -1
+        });
+        guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+        window.valine = new Valine({
+            el: '.vcomment',
+            notify: notify,
+            verify: verify,
+            appId: "UF41K2V1YdIabj0Hd9TXLuV9-gzGzoHsz",
+            appKey: "EfXnzBbp4gTCI4U99bctAjO8",
+            avatar:'mm',
+            placeholder: "Just go",
+            guest_info:guest_info,
+            pageSize:'10'
+        });
+    </script>
+  
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
