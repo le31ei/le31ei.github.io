@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>xray反连平台docker化 | blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="docker," />
+  
+
+  <meta name="description" content="每次在临时使用xray进行扫描时，都没有配置比较麻烦的反连平台，有些需要外联的漏洞都没有扫到。这次想整个docker持久化的放那里，随时可以用，使用docker维护方便，部署也非常方便。本文记录下配置过程中碰到的一些知识点。 0x01 xray配置项配置反连平台主要的配置项在reverse项，主要有http、dns、client三个大项和其他一些小项目构成。 先给出总的配置项，后面挨着对各个项目进">
+<meta property="og:type" content="article">
+<meta property="og:title" content="xray反连平台docker化">
+<meta property="og:url" content="http://blog.le31ei.top/2021/04/13/xray%E5%8F%8D%E8%BF%9E%E5%B9%B3%E5%8F%B0docker%E5%8C%96/index.html">
+<meta property="og:site_name" content="blog">
+<meta property="og:description" content="每次在临时使用xray进行扫描时，都没有配置比较麻烦的反连平台，有些需要外联的漏洞都没有扫到。这次想整个docker持久化的放那里，随时可以用，使用docker维护方便，部署也非常方便。本文记录下配置过程中碰到的一些知识点。 0x01 xray配置项配置反连平台主要的配置项在reverse项，主要有http、dns、client三个大项和其他一些小项目构成。 先给出总的配置项，后面挨着对各个项目进">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.le31ei.top/2021/04/13/xray%E5%8F%8D%E8%BF%9E%E5%B9%B3%E5%8F%B0docker%E5%8C%96/image-20210413141854001.png">
+<meta property="article:published_time" content="2021-04-13T06:21:04.000Z">
+<meta property="article:modified_time" content="2021-04-13T06:21:04.213Z">
+<meta property="article:author" content="le31ei">
+<meta property="article:tag" content="docker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.le31ei.top/2021/04/13/xray%E5%8F%8D%E8%BF%9E%E5%B9%B3%E5%8F%B0docker%E5%8C%96/image-20210413141854001.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'G-4RKHRGTSTZ', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?ccc85f1c0e860658bc30a742eab6c9d0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.0.2"><link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">HOME</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">HOME</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            search
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-xray%E9%85%8D%E7%BD%AE%E9%A1%B9"><span class="toc-text">0x01 xray配置项</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-docker%E5%8C%96"><span class="toc-text">0x02 docker化</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%81%97%E7%95%99%E9%97%AE%E9%A2%98"><span class="toc-text">遗留问题</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-xray反连平台docker化" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">xray反连平台docker化</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2021.04.13</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>le31ei</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/Program/">Program</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>每次在临时使用xray进行扫描时，都没有配置比较麻烦的反连平台，有些需要外联的漏洞都没有扫到。这次想整个docker持久化的放那里，随时可以用，使用docker维护方便，部署也非常方便。本文记录下配置过程中碰到的一些知识点。</p>
+<h1 id="0x01-xray配置项"><a href="#0x01-xray配置项" class="headerlink" title="0x01 xray配置项"></a>0x01 xray配置项</h1><p>配置反连平台主要的配置项在<code>reverse</code>项，主要有<code>http</code>、<code>dns</code>、<code>client</code>三个大项和其他一些小项目构成。</p>
+<p>先给出总的配置项，后面挨着对各个项目进行说明。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">reverse:</span></span><br><span class="line">  <span class="attr">db_file_path:</span> <span class="string">&quot;./xray/db/reverse.db&quot;</span>                     </span><br><span class="line">  <span class="attr">token:</span> <span class="string">&quot;password&quot;</span>                                </span><br><span class="line">  <span class="attr">http:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">listen_ip:</span> <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span> </span><br><span class="line">    <span class="attr">listen_port:</span> <span class="string">&quot;8080&quot;</span></span><br><span class="line">    <span class="attr">ip_header:</span> <span class="string">&quot;X-Forwarded-For&quot;</span>                       </span><br><span class="line">  <span class="attr">dns:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">listen_ip:</span> <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span> </span><br><span class="line">    <span class="attr">domain:</span> <span class="string">&quot;example.com&quot;</span>                          </span><br><span class="line">    <span class="attr">is_domain_name_server:</span> <span class="literal">true</span>                 </span><br><span class="line">    <span class="attr">resolve:</span>                                     </span><br><span class="line">    <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">A</span>                                    </span><br><span class="line">      <span class="attr">record:</span> <span class="string">ns1</span></span><br><span class="line">      <span class="attr">value:</span> <span class="number">154.</span><span class="string">x.x.x</span></span><br><span class="line">      <span class="attr">ttl:</span> <span class="number">60</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">A</span>                                    </span><br><span class="line">      <span class="attr">record:</span> <span class="string">ns2</span></span><br><span class="line">      <span class="attr">value:</span> <span class="number">154.</span><span class="string">x.x.x</span></span><br><span class="line">      <span class="attr">ttl:</span> <span class="number">60</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">remote_server:</span> <span class="literal">false</span>                          </span><br><span class="line">    <span class="attr">http_base_url:</span> <span class="string">&quot;http://recv.example.com&quot;</span>      </span><br><span class="line">    <span class="attr">dns_server_ip:</span> <span class="string">&quot;154.x.x.x&quot;</span>               </span><br></pre></td></tr></table></figure>
+
+<p><strong>db_file_path</strong></p>
+<p>xray文档解释得很清楚了，反连平台的数据库，指明一个地址就行了。</p>
+<p><strong>token</strong></p>
+<p>反连平台的认证密码</p>
+<p><strong>http</strong></p>
+<p>这个选项就是监听的端口，需要说明的是因为是docker化使用frp代理的端口，因此需要通过http头的<code>X-Forwarded-For</code>字段读取远程的ip，否则是frp的docker容器的ip地址</p>
+<p><strong>dns</strong></p>
+<p>该选项配置DNS的相关信息，需要制定一个域名，用于反连平台的dns解析。后面的resolve选项，制定静态的dns解析，也就是反连平台作为服务器的解析规则。</p>
+<p><strong>client</strong></p>
+<p>该处是配置客户端的一些参数。**<code>remote_server</code>要设置为false，当设置为true的时候，会作为客户端在启动的时候请求外联平台。**另外两个参数则是在外联平台显示的地址。</p>
+<p><strong>dns设置</strong></p>
+<p>在域名设置的时候，一般来说需要两个域名。一个作为主域名，来进行dnslog请求，另一个作为NS记录的解析转发域名。也可以使用DNS的胶水记录（glue record）用一个域名来转发，但需要DNS服务商的支持。</p>
+<p>何为DNS胶水记录？</p>
+<p>首先要了解NS记录，ns记录用于指定域名用哪个DNS服务器来解析，一般只能设置为域名的形式，如NS1.example.com。而在只有一个域名的情况下，NS需要指定域名，而DNS服务器还没有对外广播的时候，那么就陷入一个死循环，ns记录需要设置为域名，但是本域名还没有被DNS服务器所解析。举个例子，如<code>a.com</code>设置的ns记录是<code>ns.a.com</code>，我们就必须制定<code>ns.a.com</code>的A记录，否则解析<code>ns.a.com</code>又会去解析<code>a.com</code>，所以该请求就要用到DNS胶水记录了。</p>
+<p>胶水记录本身为DNS所支持的功能。指定ns解析的域名时，可以使用本DNS的A记录。</p>
+<h1 id="0x02-docker化"><a href="#0x02-docker化" class="headerlink" title="0x02 docker化"></a>0x02 docker化</h1><p>项目采用docker compose的形式，直接可以使用<code>docker-compose -d</code>进行一键启动。基础镜像可以直接使用alpine，需要运行go程序，所以需要在<code>Dockerfile</code>中添加如下命令才能正常运行</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">RUN</span><span class="bash"> mkdir /lib64 &amp;&amp; ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2</span></span><br></pre></td></tr></table></figure>
+
+<p>使用frp进行转发需要设置<code>depends_on</code></p>
+<p>具体的项目结构如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">├── Dockerfile</span><br><span class="line">├── README.md</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">└── tools</span><br><span class="line">    ├── frp</span><br><span class="line">    │   ├── frpc</span><br><span class="line">    │   └── frpc.ini</span><br><span class="line">    └── xray</span><br><span class="line">        ├── config.yaml</span><br><span class="line">        ├── db</span><br><span class="line">        │   └── reverse.db</span><br><span class="line">        └── xray</span><br><span class="line"></span><br><span class="line">4 directories, 8 files</span><br></pre></td></tr></table></figure>
+
+<p>Dockerfile:</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> alpine</span><br><span class="line"></span><br><span class="line"><span class="keyword">LABEL</span><span class="bash"> maintainer=<span class="string">&quot;le31ei &lt;le31ei@qq.com&gt;&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> <span class="built_in">echo</span> <span class="string">&quot;https://mirrors.ustc.edu.cn/alpine/latest-stable/main&quot;</span> &gt; /etc/apk/repositories \</span></span><br><span class="line"><span class="bash">    &amp;&amp; apk update \</span></span><br><span class="line"><span class="bash">    &amp;&amp; apk add openssl musl-dev</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> mkdir /lib64 &amp;&amp; ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /tools</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>Docker-compose.yml</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&quot;2&quot;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">xray:</span></span><br><span class="line">    <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">    <span class="attr">volumes:</span> </span><br><span class="line">      <span class="bullet">-</span> <span class="string">./tools:/tools</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">./xray/xray</span> <span class="string">--config</span> <span class="string">./xray/config.yaml</span> <span class="string">reverse</span> </span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">frp:</span></span><br><span class="line">    <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">    <span class="attr">volumes:</span> </span><br><span class="line">      <span class="bullet">-</span> <span class="string">./tools:/tools</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">./frp/frpc</span> <span class="string">-c</span> <span class="string">./frp/frpc.ini</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">xray</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="遗留问题"><a href="#遗留问题" class="headerlink" title="遗留问题"></a>遗留问题</h1><p>反连平台的http模块支持从http协议的header中取真实ip，但dns模块没有类似的功能，所以在用docker封装的反连平台中，<code>RemoteAddr</code>均为docker中frp容器的地址，目前暂未想到解决办法，将就使用了。</p>
+<p><img src="/2021/04/13/xray%E5%8F%8D%E8%BF%9E%E5%B9%B3%E5%8F%B0docker%E5%8C%96/image-20210413141854001.png" alt="image-20210413141854001"></p>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2021/03/30/java%E5%AE%89%E5%85%A8%E5%AD%A6%E4%B9%A0%E4%B9%8B%E6%B3%A8%E8%A7%A3/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              search
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+    <div id="comment" class="vcomment" ></div>
+    <script>
+        var notify = 'true' == true ? true : false;
+        var verify = 'false' == true ? true : false;
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+            return GUEST_INFO.indexOf(item) > -1
+        });
+        guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+        window.valine = new Valine({
+            el: '.vcomment',
+            notify: notify,
+            verify: verify,
+            appId: "UF41K2V1YdIabj0Hd9TXLuV9-gzGzoHsz",
+            appKey: "EfXnzBbp4gTCI4U99bctAjO8",
+            avatar:'mm',
+            placeholder: "Just go",
+            guest_info:guest_info,
+            pageSize:'10'
+        });
+    </script>
+  
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
