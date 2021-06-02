@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>漏洞管理scap协议 | blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="scap," />
+  
+
+  <meta name="description" content="最近工作中了解到了scap协议，需要用到中间的几个模块，遂专门抽时间对scap进行了深入的学习。本文记录一下学习过程，以及自己的相关理解。 1. 概念scap根据维基百科的解释是安全内容自动化协议，是用于自动化漏洞管理、评估和条款符合检测的一套标准，结合了一系列用于评估软件缺陷和安全相关问题的开放标准，用于系统测试来发现漏洞，并根据漏洞可能造成的影响提供评分标准。是意图将上述开放标准用于自动化漏洞">
+<meta property="og:type" content="article">
+<meta property="og:title" content="漏洞管理scap协议">
+<meta property="og:url" content="http://blog.le31ei.top/2021/06/02/%E6%BC%8F%E6%B4%9E%E7%AE%A1%E7%90%86scap%E5%8D%8F%E8%AE%AE/index.html">
+<meta property="og:site_name" content="blog">
+<meta property="og:description" content="最近工作中了解到了scap协议，需要用到中间的几个模块，遂专门抽时间对scap进行了深入的学习。本文记录一下学习过程，以及自己的相关理解。 1. 概念scap根据维基百科的解释是安全内容自动化协议，是用于自动化漏洞管理、评估和条款符合检测的一套标准，结合了一系列用于评估软件缺陷和安全相关问题的开放标准，用于系统测试来发现漏洞，并根据漏洞可能造成的影响提供评分标准。是意图将上述开放标准用于自动化漏洞">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.le31ei.top/2021/06/02/%E6%BC%8F%E6%B4%9E%E7%AE%A1%E7%90%86scap%E5%8D%8F%E8%AE%AE/image-20210602203848073.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/06/02/%E6%BC%8F%E6%B4%9E%E7%AE%A1%E7%90%86scap%E5%8D%8F%E8%AE%AE/image-20210602204446373.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/06/02/%E6%BC%8F%E6%B4%9E%E7%AE%A1%E7%90%86scap%E5%8D%8F%E8%AE%AE/image-20210602204502667.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/06/02/%E6%BC%8F%E6%B4%9E%E7%AE%A1%E7%90%86scap%E5%8D%8F%E8%AE%AE/image-20210602210424116.png">
+<meta property="article:published_time" content="2021-06-02T13:20:25.000Z">
+<meta property="article:modified_time" content="2021-06-02T13:20:25.047Z">
+<meta property="article:author" content="le31ei">
+<meta property="article:tag" content="scap">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.le31ei.top/2021/06/02/%E6%BC%8F%E6%B4%9E%E7%AE%A1%E7%90%86scap%E5%8D%8F%E8%AE%AE/image-20210602203848073.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'G-4RKHRGTSTZ', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?ccc85f1c0e860658bc30a742eab6c9d0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.0.2"><link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">HOME</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">HOME</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            search
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%A6%82%E5%BF%B5"><span class="toc-text">1. 概念</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E5%8D%8F%E8%AE%AE"><span class="toc-text">2. 协议</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E5%B8%B8%E8%A7%81%E7%BB%84%E4%BB%B6%E5%92%8C%E5%8D%8F%E8%AE%AE"><span class="toc-text">3. 常见组件和协议</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="toc-text">参考文档</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-漏洞管理scap协议" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">漏洞管理scap协议</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2021.06.02</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>le31ei</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/%E5%AE%89%E5%85%A8%E5%92%A8%E8%AF%A2/">安全咨询</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>最近工作中了解到了scap协议，需要用到中间的几个模块，遂专门抽时间对scap进行了深入的学习。本文记录一下学习过程，以及自己的相关理解。</p>
+<h1 id="1-概念"><a href="#1-概念" class="headerlink" title="1. 概念"></a>1. 概念</h1><p>scap根据维基百科的解释是安全内容自动化协议，是用于自动化漏洞管理、评估和条款符合检测的一套标准，结合了一系列用于评估软件缺陷和安全相关问题的开放标准，用于系统测试来发现漏洞，并根据漏洞可能造成的影响提供评分标准。是意图将上述开放标准用于自动化漏洞管理、评估和条款符合检测的一套标准。</p>
+<p>简单来说，scap协议就是为了将漏洞管理做一个统一的规范，形成自己特有的生态系统。目前大多数漏洞均有CVE编号，CVE就是Scap的一个部分，主要是为了统一漏洞描述、修补建议、影响范围等，避免不同的厂商对同一个漏洞的定义有不同的定义，从而形成规范化的漏洞管理。本文以最新的SCAP1.3作为介绍的版本。</p>
+<h1 id="2-协议"><a href="#2-协议" class="headerlink" title="2. 协议"></a>2. 协议</h1><p>scap主要由以下协议组成，部分组件为大家所熟悉的：</p>
+<blockquote>
+<ol>
+<li>Asset Identification 资产识别</li>
+<li>Asset Reporting Format (ARF)  资产报告规范</li>
+<li>Common Configuration Enumeration (CCE)  通用配置枚举</li>
+<li>Common Platform Enumeration (CPE) 通用平台枚举</li>
+<li>Open Vulnerability Assessment Language (OVAL) 开放漏洞评估语言</li>
+<li>Open Checklist Interactive Language (OCIL)  开放式交互语言</li>
+<li>Trust Model for Security Automation Data (TMSAD) 安全自动化数据的信任模型</li>
+<li>Extensible Configuration Checklist Description Format (XCCDF) 可扩展配置清单描述格式</li>
+<li>Software Identification (SWID) 软件标识</li>
+</ol>
+</blockquote>
+<p>一般常用的协议如下：</p>
+<p><img src="/2021/06/02/%E6%BC%8F%E6%B4%9E%E7%AE%A1%E7%90%86scap%E5%8D%8F%E8%AE%AE/image-20210602203848073.png" alt="image-20210602203848073"></p>
+<p>随便打开一个NVD存放的cve漏洞信息，可以找到几个模块的常见使用，第一个就是CVE编号，已经成为业界公用的漏洞标识，</p>
+<p>第二个CVSS评分</p>
+<p><img src="/2021/06/02/%E6%BC%8F%E6%B4%9E%E7%AE%A1%E7%90%86scap%E5%8D%8F%E8%AE%AE/image-20210602204446373.png" alt="image-20210602204446373"></p>
+<p>第三个CPE信息</p>
+<p><img src="/2021/06/02/%E6%BC%8F%E6%B4%9E%E7%AE%A1%E7%90%86scap%E5%8D%8F%E8%AE%AE/image-20210602204502667.png" alt="image-20210602204502667"></p>
+<p>可以看到美国的漏洞管理已经形成了统一的标准，采用SCAP这一系列的协议，能够非常标准化的管理所有漏洞。</p>
+<h1 id="3-常见组件和协议"><a href="#3-常见组件和协议" class="headerlink" title="3. 常见组件和协议"></a>3. 常见组件和协议</h1><p><strong>CVE</strong></p>
+<p>通用的漏洞库，基本上常见的组件如果存在漏洞的话，基本会有对应的CVE编号。安全研究者一般在找到通用软件漏洞的时候，也会提交给相关厂商申请CVE编号，可以说现在安全研究者就是以CVE数量作为自己的能力体现。</p>
+<p>CVE编号通常为CVE-2021-xxxx，中间为年份，最后的数字为漏洞编号。CVE网站<a target="_blank" rel="noopener" href="https://cve.mitre.org/">https://cve.mitre.org/</a>可以根据编号搜索到对应的漏洞描述。描述中通常包含漏洞影响的组件、影响的范围以及对应的CVSS评分和修复建议等详细信息。</p>
+<p><img src="/2021/06/02/%E6%BC%8F%E6%B4%9E%E7%AE%A1%E7%90%86scap%E5%8D%8F%E8%AE%AE/image-20210602210424116.png" alt="image-20210602210424116"></p>
+<p><strong>CPE</strong></p>
+<p>相当于一个识别码，<strong>SCAP的一种开源实现OPENSCAP采用的思想就是，在服务器中收集软件和系统的CPE信息，然后匹配CVE中对应的指纹来查找漏洞</strong>。</p>
+<p>该方式相对于传统的扫描有如下几种优势：</p>
+<blockquote>
+<ol>
+<li>大部分漏洞不会有POC或者EXP，采用CPE匹配的方式可以检测出来这部分漏洞</li>
+<li>不用主动扫描，不会对网络造成压力</li>
+<li>检测快速精准，比传统的远程扫描有更高 的精准度</li>
+</ol>
+</blockquote>
+<p>但该方式也有他的问题所在</p>
+<blockquote>
+<ol>
+<li>跟离线的配置检查类似，需要采用探针的方式进行检查，对于未发现的灰色资产是没有办法进行检测的，只能对已经发现的纳管资产进行检查</li>
+<li>针对于国产或者小厂商的软件或者系统不存在CPE的情况下，该种方式是没办法进行检测的</li>
+</ol>
+</blockquote>
+<p><strong>CVSS</strong></p>
+<p>通用漏洞评分系统，CVE采用该套评分标准对一个漏洞进行定义评分。目前最新的版本是3.1。此处不详细扩展相关介绍，后期专项学习的时候再详细说明。</p>
+<p>以上就是SCAP中常用的几种协议或者工具，此处仅做简单介绍，有兴趣的话，可查找相关原文进行学习。</p>
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-hans/%E5%AE%89%E5%85%A8%E5%86%85%E5%AE%B9%E8%87%AA%E5%8A%A8%E5%8C%96%E5%8D%8F%E8%AE%AE">维基百科：安全内容自动化协议</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.fooying.com/common_vulnerability_management_and_scap/?utm_source=wechat_session&utm_medium=social&utm_oi=1114265509834715136#%E8%AF%84%E5%88%86%E7%A4%BA%E4%BE%8B">通用漏洞管理与SCAP</a></li>
+<li><a target="_blank" rel="noopener" href="https://csrc.nist.gov/Projects/Security-Content-Automation-Protocol/Specifications/arf">https://csrc.nist.gov/Projects/Security-Content-Automation-Protocol/Specifications/arf</a></li>
+<li><a href="./SCAP_Standard_introduction_Li.Zhang.pdf">SCAP 标准简介</a></li>
+<li><a target="_blank" rel="noopener" href="https://nvd.nist.gov/ncp/repository?orderBy=modifiedDate&orderDirection=desc&startIndex=440">National Checklist Program Repository</a></li>
+</ol>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2021/05/23/nodejs%E8%AF%B7%E6%B1%82%E8%B5%B0%E7%A7%81%E4%B8%8Essrf/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              search
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+    <div id="comment" class="vcomment" ></div>
+    <script>
+        var notify = 'true' == true ? true : false;
+        var verify = 'false' == true ? true : false;
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+            return GUEST_INFO.indexOf(item) > -1
+        });
+        guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+        window.valine = new Valine({
+            el: '.vcomment',
+            notify: notify,
+            verify: verify,
+            appId: "UF41K2V1YdIabj0Hd9TXLuV9-gzGzoHsz",
+            appKey: "EfXnzBbp4gTCI4U99bctAjO8",
+            avatar:'mm',
+            placeholder: "Just go",
+            guest_info:guest_info,
+            pageSize:'10'
+        });
+    </script>
+  
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
