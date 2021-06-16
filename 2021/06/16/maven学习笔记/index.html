@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>maven学习笔记 | blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="maven," />
+  
+
+  <meta name="description" content="maven很久之前学过，但后面没搞java就基本忘了，基本的打包命令都忘得一干二净。最近准备深入学习下java，头一个要学的便是maven。在此记录下maven的学习笔记。 1. maven介绍maven主要用作java程序的打包，专门为java项目设计的管理和构建工具。 通过maven创建的项目结构大致如下： 1234567891011➜  maventest tree.├── pom.xml└">
+<meta property="og:type" content="article">
+<meta property="og:title" content="maven学习笔记">
+<meta property="og:url" content="http://blog.le31ei.top/2021/06/16/maven%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="blog">
+<meta property="og:description" content="maven很久之前学过，但后面没搞java就基本忘了，基本的打包命令都忘得一干二净。最近准备深入学习下java，头一个要学的便是maven。在此记录下maven的学习笔记。 1. maven介绍maven主要用作java程序的打包，专门为java项目设计的管理和构建工具。 通过maven创建的项目结构大致如下： 1234567891011➜  maventest tree.├── pom.xml└">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.le31ei.top/2021/06/16/maven%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210616172647670.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/06/16/maven%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210616175234372.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/06/16/maven%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210616210900735.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/06/16/maven%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210616211004143.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/06/16/maven%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210616211531581.png">
+<meta property="og:image" content="http://blog.le31ei.top/2021/06/16/maven%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210616212336017.png">
+<meta property="article:published_time" content="2021-06-16T13:34:56.000Z">
+<meta property="article:modified_time" content="2021-06-16T13:34:56.612Z">
+<meta property="article:author" content="le31ei">
+<meta property="article:tag" content="maven">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.le31ei.top/2021/06/16/maven%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210616172647670.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'G-4RKHRGTSTZ', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?ccc85f1c0e860658bc30a742eab6c9d0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.0.2"><link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">HOME</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">HOME</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            search
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-maven%E4%BB%8B%E7%BB%8D"><span class="toc-text">1. maven介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-maven%E9%85%8D%E7%BD%AE"><span class="toc-text">2. maven配置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-maven%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">3. maven常用命令</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86"><span class="toc-text">4. 依赖管理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-Archetype"><span class="toc-text">5. Archetype</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-maven学习笔记" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">maven学习笔记</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2021.06.16</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>le31ei</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/Program/">Program</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>maven很久之前学过，但后面没搞java就基本忘了，基本的打包命令都忘得一干二净。最近准备深入学习下java，头一个要学的便是maven。在此记录下maven的学习笔记。</p>
+<h1 id="1-maven介绍"><a href="#1-maven介绍" class="headerlink" title="1. maven介绍"></a>1. maven介绍</h1><p>maven主要用作java程序的打包，专门为java项目设计的管理和构建工具。</p>
+<p>通过maven创建的项目结构大致如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">➜  maventest tree</span><br><span class="line">.</span><br><span class="line">├── pom.xml</span><br><span class="line">└── src</span><br><span class="line">    ├── main</span><br><span class="line">    │   ├── java</span><br><span class="line">    │   └── resources</span><br><span class="line">    └── test</span><br><span class="line">        └── java</span><br><span class="line"></span><br><span class="line">6 directories, 2 files</span><br></pre></td></tr></table></figure>
+
+<p><code>pom.xml</code>文件就是maven的描述文件，里面存放了对应的依赖包名及对应的版本。</p>
+<p><code>src</code>目录存放代码，下面的子目录java文件夹存放java代码，resource文件主要存放资源文件。</p>
+<p>pom.xml文件的基本结构如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.example<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maventest<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">maven.compiler.source</span>&gt;</span>8<span class="tag">&lt;/<span class="name">maven.compiler.source</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">maven.compiler.target</span>&gt;</span>8<span class="tag">&lt;/<span class="name">maven.compiler.target</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>commons-logging<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-logging<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>groupId</code>类似于java的包名，一般是公司或者组织名称。</p>
+<p><code>artifactId</code>通常是项目的名称</p>
+<p><code>version</code>就是项目的版本</p>
+<p>通常由这三个元素作为了项目的唯一标识。</p>
+<p><code>dependencies</code>则是当前maven项目所要依赖的包。包的标识也由上面三个因素所确定。当写好依赖后，maven会自动的将依赖包下载到classpath当中。</p>
+<p><strong>注：只有以-SNAPSHOT结尾的版本号会被Maven视为开发版本，开发版本每次都会重复下载依赖，这种SNAPSHOT版本只能用于内部私有的Maven repo，公开发布的版本不允许出现SNAPSHOT。</strong></p>
+<h1 id="2-maven配置"><a href="#2-maven配置" class="headerlink" title="2. maven配置"></a>2. maven配置</h1><p>maven有仓库的概念，所有的依赖都是从仓库中下载的。</p>
+<p>仓库的类型有如下几种：</p>
+<ul>
+<li>本地仓库：电脑上的仓库，默认路径在：<code>~/.m2/repository</code></li>
+<li>私服仓库：一般公司内部自己搭建的仓库</li>
+<li>中央仓库：apache团队维护的仓库</li>
+</ul>
+<p>仓库的查找顺序如下：</p>
+<p><img src="/2021/06/16/maven%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210616172647670.png" alt="image-20210616172647670"></p>
+<p>中央仓库的优先级最低，一般是从本地开始查找，没有就找私服仓库，再没有就找中央仓库。一般国内的情况访问中央仓库都比较慢，所以一般在使用仓库的时候都要配置仓库镜像。</p>
+<p><strong>配置仓库镜像</strong>：</p>
+<p>配置文件的位置在：<code>~/.m2/settings.xml</code></p>
+<p>在里面添加如下的配置即可：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mirrors</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span>&gt;</span>google-maven-central<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>Google Maven Central<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">url</span>&gt;</span>https://maven-central.storage.googleapis.com</span><br><span class="line">        <span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mirrors</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>该处最好不要使用阿里云的maven仓库，默认是不带索引的，所以添加到idea中，会无法更新maven索引，也就没法使用dependency自动添加的插件。</strong></p>
+<p>maven依赖查询的网站在：<a target="_blank" rel="noopener" href="https://search.maven.org/">https://search.maven.org/</a>搜索关键字即可找到对应的包</p>
+<p><img src="/2021/06/16/maven%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210616175234372.png" alt="image-20210616175234372"></p>
+<h1 id="3-maven常用命令"><a href="#3-maven常用命令" class="headerlink" title="3. maven常用命令"></a>3. maven常用命令</h1><p>maven中有几个常用的命令，在IDEA中直接做成了按钮，可以点击实现，但也要学一下命令是怎么回事。</p>
+<p><code>mvn clean</code>：清理编译好的文件</p>
+<p><code>mvn compile</code>：将java代码编译成class文件</p>
+<p><code>mvn test</code>：项目测试</p>
+<p><code>mvn package</code>：根据配置将项目打包成jar或者war</p>
+<p><code>mvn install</code>：将生成的jar包复制到本地的maven仓库中，其他项目就可以使用这个jar包了</p>
+<p><code>mvn deploy</code>：将生成的jar包复制到私有的仓库中，供其他开发者使用</p>
+<p><strong>生命周期Lifecycle</strong></p>
+<p>生命周期包含一系列的阶段（phase），下面是<code>default</code>的声明周期：</p>
+<ul>
+<li>validate</li>
+<li>initialize</li>
+<li>generate-sources</li>
+<li>process-sources</li>
+<li>generate-resources</li>
+<li>process-resources</li>
+<li>compile</li>
+<li>process-classes</li>
+<li>generate-test-sources</li>
+<li>process-test-sources</li>
+<li>generate-test-resources</li>
+<li>process-test-resources</li>
+<li>test-compile</li>
+<li>process-test-classes</li>
+<li>test</li>
+<li>prepare-package</li>
+<li>package</li>
+<li>pre-integration-test</li>
+<li>integration-test</li>
+<li>post-integration-test</li>
+<li>verify</li>
+<li>install</li>
+<li>deploy</li>
+</ul>
+<p>当我们运行<code>mvn pachage</code>时，maven就会执行声明周期，运行到package的phase为止。</p>
+<p>第二个<code>clean</code>的声明周期，由三个phase组成：</p>
+<ul>
+<li>pre-clean</li>
+<li>Clean</li>
+<li>post-clean</li>
+</ul>
+<p>当我们使用<code>mvn</code>命令时，后面跟上的参数就是phase，maven根据生命周期运行到指定的phase。</p>
+<p>例如执行命令<code>mvn clean test</code>，则是先执行clean生命周期到clean，然后再执行default生命周期到test，执行的phase如下：</p>
+<ul>
+<li>Pre-clean</li>
+<li>clean</li>
+<li>validate</li>
+<li>…</li>
+<li>Package</li>
+</ul>
+<p><strong>Goal</strong></p>
+<p>执行一个phase又会触发多个goal，相当于goal是组成phase的一部分，phase又是组成lifecycle的一部分。</p>
+<p>执行compile，对应的goal：compiler:compile</p>
+<p>执行test，对应的goal：compiler:testCompile  surefire:test</p>
+<p>大多数情况，我们只要指定phase，就默认执行这些phase默认绑定的goal，只有少数情况，我们可以直接指定运行一个goal，例如，启动Tomcat服务器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn tomcat:run</span><br></pre></td></tr></table></figure>
+
+<p><strong>IDEA中配置自动加载dependency</strong></p>
+<p>maven的中央仓库镜像设置为谷歌的镜像后，通过idea可以自动更新仓库索引，如下图</p>
+<p><img src="/2021/06/16/maven%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210616210900735.png" alt="image-20210616210900735"></p>
+<p>更新完了后，在pom.xml的dependencies中就可以进行模糊查找依赖包了。</p>
+<p><img src="/2021/06/16/maven%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210616211004143.png" alt="image-20210616211004143"></p>
+<h1 id="4-依赖管理"><a href="#4-依赖管理" class="headerlink" title="4. 依赖管理"></a>4. 依赖管理</h1><p>通常的依赖的配置文件如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.11<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>组成依赖的元素有四个：<code>groupId</code>、<code>artifactId</code>、<code>version</code>、<code>scope</code>。</p>
+<p>其中scope表示了依赖的范围，主要的值如下所示：</p>
+<p><img src="/2021/06/16/maven%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210616211531581.png" alt="image-20210616211531581"></p>
+<p>依赖还有模块的继承使用方法，具体可以查看<a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/1252599548343744/1309301243117601">https://www.liaoxuefeng.com/wiki/1252599548343744/1309301243117601</a>。</p>
+<h1 id="5-Archetype"><a href="#5-Archetype" class="headerlink" title="5. Archetype"></a>5. Archetype</h1><p>顾名思义就是模板，maven项目的模板工具包。能够通过这些模板快速创建一些工程。在使用IDEA创建maven工程时，内置了许多模板。</p>
+<p><img src="/2021/06/16/maven%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210616212336017.png" alt="image-20210616212336017"></p>
+<p>一般我们很少去研究所有的模板，一般常用的模板就那么几个，一般最常用的就是下面这个，拿来创建web站点：</p>
+<p><code>org.apache.maven.archetypes:maven-archtype-webapp</code></p>
+<p>还有其他很多模板，就不再去深究了</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><p><a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/1252599548343744/1255945359327200">廖雪峰maven教程</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/lenve/p/12047793.html">https://www.cnblogs.com/lenve/p/12047793.html</a></p>
+</li>
+</ol>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2021/06/02/%E6%BC%8F%E6%B4%9E%E7%AE%A1%E7%90%86scap%E5%8D%8F%E8%AE%AE/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              search
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+    <div id="comment" class="vcomment" ></div>
+    <script>
+        var notify = 'true' == true ? true : false;
+        var verify = 'false' == true ? true : false;
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+            return GUEST_INFO.indexOf(item) > -1
+        });
+        guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+        window.valine = new Valine({
+            el: '.vcomment',
+            notify: notify,
+            verify: verify,
+            appId: "UF41K2V1YdIabj0Hd9TXLuV9-gzGzoHsz",
+            appKey: "EfXnzBbp4gTCI4U99bctAjO8",
+            avatar:'mm',
+            placeholder: "Just go",
+            guest_info:guest_info,
+            pageSize:'10'
+        });
+    </script>
+  
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
