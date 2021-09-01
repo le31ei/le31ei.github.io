@@ -6,7 +6,7 @@
   <link href="http://blog.le31ei.top/atom.xml" rel="self"/>
   
   <link href="http://blog.le31ei.top/"/>
-  <updated>2021-08-16T12:06:54.358Z</updated>
+  <updated>2021-09-01T07:42:31.859Z</updated>
   <id>http://blog.le31ei.top/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>openpyxl库备忘录</title>
+    <link href="http://blog.le31ei.top/2021/09/01/openpyxl%E5%BA%93%E5%A4%87%E5%BF%98%E5%BD%95/"/>
+    <id>http://blog.le31ei.top/2021/09/01/openpyxl%E5%BA%93%E5%A4%87%E5%BF%98%E5%BD%95/</id>
+    <published>2021-09-01T07:42:31.000Z</published>
+    <updated>2021-09-01T07:42:31.859Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近工作中用到次表格的读写，用python写的脚本，用到的库是<code>openpyxl</code>，这里记录一下常见的使用方法，做个备忘。</p><p>以前经常使用<code>xlwt</code>和<code>xlrd</code>对excel进行读写，但这两个库不支持excel2010以后的版本，也就是<code>xlsx</code>后缀的表格，该工具没办法支持。所以找到一个更新的工具库<code>openpyxl</code>可以同时对excel进行读写操作。</p><p><code>openpyxl</code>的官方文档的地址在：<a href="https://openpyxl.readthedocs.io/en/stable/index.html">https://openpyxl.readthedocs.io/en/stable/index.html</a></p><h1 id="1-打开文件和创建文件"><a href="#1-打开文件和创建文件" class="headerlink" title="1. 打开文件和创建文件"></a>1. 打开文件和创建文件</h1><p>读写excel的第一步就是打开文件或者创建新文件，<code>openpyxl</code>库对打开excel文件就是获取到<code>workbook</code>对象，一共有两个常用的方法：<code>load_workbook()</code>和<code>Workbook()</code>，使用方法如下：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">workbook = openpyxl.Workbook()</span><br><span class="line">workbook = openpyxl.load_workbook(filename)</span><br></pre></td></tr></table></figure><p>打开文件后就要创建或者读取表格中的sheet，有如下方法</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sheet = workbook.active <span class="comment"># 获取到当前激活的sheet</span></span><br><span class="line">sheet1 = workbook.create_sheet(<span class="string">&#x27;title&#x27;</span>, <span class="number">0</span>)  <span class="comment"># 创建新的sheet</span></span><br></pre></td></tr></table></figure><h1 id="2-读写表格"><a href="#2-读写表格" class="headerlink" title="2. 读写表格"></a>2. 读写表格</h1><p><strong>读取表格</strong></p><p>在获取到<code>sheet</code>对象后，就能够通过sheet获取到<code>rows</code>迭代器，可通过rows遍历表格中存在数据的所有行。在遍历rows时，又可以得到cols迭代器，然后通过cols可以遍历每个单元格中的具体的数据。</p><p><code>openpyxl</code>把每个单元格定义为<code>Cell</code>，一般通过<code>Cell.value</code>属性读取具体的单元格存放的值。</p><p>具体的读取代码如下：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">workbook = openpyxl.load_workbook(filename)</span><br><span class="line">sheet = workbook.active</span><br><span class="line"><span class="keyword">for</span> row <span class="keyword">in</span> <span class="built_in">list</span>(sheet.rows)[<span class="number">2</span>:]:</span><br><span class="line">      <span class="keyword">for</span> cell <span class="keyword">in</span> row:</span><br><span class="line">           print(cell.value)</span><br></pre></td></tr></table></figure><p>需要说明的是，如果cell单元格没有数据，那么读取的值就为<code>None</code>，这个值也方便后续对数据的处理。</p><p><strong><code>openpyxl</code>的另一个特殊的地方是，所有的下标均是从1开始的，所以在使用python迭代器遍历的时候，需要在下标加上1。</strong></p><p>一般读取的表格会带有title，所以需要从第二行开始读，而<code>sheet.rows</code>返回的是一个迭代器，无法使用切片对其进行操作，所以要将迭代器转换为list，然后使用切片，就有如下代码：<code>list(sheet.rows)[2:]</code>。</p><p><code>openpyxl</code>在读取表格的时候，对于合并单元格的内容，会依次读取，合并后的单元格第一行能读取到值，后续行则为<code>None</code>，也就是合并单元格并不会影响到<code>openpyxl</code>的读取，所以只能自行在程序中对合并的单元格进行处理，这个比较麻烦一点。样例代码可参考如下：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">row = <span class="number">2</span></span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> self.nomal_assets:</span><br><span class="line">    start_row = row</span><br><span class="line">    sheet_nomal.cell(row=row, column=<span class="number">11</span>, value=item[<span class="string">&#x27;s1&#x27;</span>])</span><br><span class="line">    sheet_nomal.cell(row=row, column=<span class="number">12</span>, value=item[<span class="string">&#x27;s2&#x27;</span>])</span><br><span class="line">    <span class="keyword">for</span> key, value <span class="keyword">in</span> item.items():</span><br><span class="line">        <span class="keyword">if</span> key == <span class="string">&#x27;port&#x27;</span>:</span><br><span class="line">            <span class="keyword">for</span> port_item <span class="keyword">in</span> value:</span><br><span class="line">                <span class="keyword">for</span> port_key, port_value <span class="keyword">in</span> port_item.items():</span><br><span class="line">                    sheet_nomal.cell(row=row, column=<span class="built_in">list</span>(item.keys()).index(key) + <span class="number">1</span>port_item.keys()).index(port_key)+ <span class="number">2</span>, value=port_value)</span><br><span class="line">                <span class="keyword">if</span> port_item <span class="keyword">is</span> <span class="keyword">not</span> value[<span class="number">-1</span>]:     <span class="comment"># 尾部有空行的情况</span></span><br><span class="line">                    row = row + <span class="number">1</span></span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        <span class="keyword">if</span> key == <span class="string">&#x27;s1&#x27;</span> <span class="keyword">or</span> key == <span class="string">&#x27;s2&#x27;</span>:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        sheet_nomal.cell(row=row, column=<span class="built_in">list</span>(item.keys()).index(key) + <span class="number">1</span>, value=value)</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure><p><strong>写表格</strong></p><p><code>openpyxl</code>在写表格的时候要麻烦一些，需要找到对应的cell进行一格一格的进行写入操作。</p><p>具体的代码如下：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sheet.cell(row=<span class="number">1</span>, column=<span class="number">1</span>, value=<span class="string">&#x27;value&#x27;</span>)</span><br></pre></td></tr></table></figure><p>通过shell对象的cell方法进行写入操作，需要指定具体的<code>row</code>和<code>colum</code>，然后<code>value</code>为具体写入的值。</p><h1 id="3-保存表格"><a href="#3-保存表格" class="headerlink" title="3. 保存表格"></a>3. 保存表格</h1><p>保存表格很简单，在对<code>sheet</code>对象是从<code>workbook</code>对象获取到的，所以只需要调用<code>workbook</code>对象的<code>save()</code>方法即可保存文件。</p><p>代码如下：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">workbook.save(filename)  </span><br></pre></td></tr></table></figure><p>这样会在当前目录保存命名的文件。</p><h1 id="4-合并单元格"><a href="#4-合并单元格" class="headerlink" title="4. 合并单元格"></a>4. 合并单元格</h1><p>还有个较为常用的方法就是合并单元格，用程序可以指定合并单元格的范围。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">self.row_alpha = <span class="string">&#x27;ABCDEFGHIJKL&#x27;</span></span><br><span class="line"><span class="keyword">for</span> aplha <span class="keyword">in</span> self.row_alpha:</span><br><span class="line">    start = aplha + <span class="built_in">str</span>(start_row)</span><br><span class="line">    end = aplha + <span class="built_in">str</span>(row)</span><br><span class="line">    sheet_nomal.merge_cells(<span class="string">f&#x27;<span class="subst">&#123;start&#125;</span>:<span class="subst">&#123;end&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure><p>用该代码可以指定具体列进行合并单元格操作，用到的关键方法就是<code>merge_cells</code>。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;最近工作中用到次表格的读写，用python写的脚本，用到的库是&lt;code&gt;openpyxl&lt;/code&gt;，这里记录一下常见的使用方法，做个备忘。&lt;/p&gt;
+&lt;p&gt;以前经常使用&lt;code&gt;xlwt&lt;/code&gt;和&lt;code&gt;xlrd&lt;/code&gt;对excel进行读写，但这两个库</summary>
+      
+    
+    
+    
+    <category term="Program" scheme="http://blog.le31ei.top/categories/Program/"/>
+    
+    
+    <category term="python" scheme="http://blog.le31ei.top/tags/python/"/>
+    
+  </entry>
   
   <entry>
     <title>python进阶之基础类型</title>
@@ -489,31 +514,6 @@
     
     
     <category term="SQL注入" scheme="http://blog.le31ei.top/tags/SQL%E6%B3%A8%E5%85%A5/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>微信小程序安全测试</title>
-    <link href="http://blog.le31ei.top/2020/11/09/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95/"/>
-    <id>http://blog.le31ei.top/2020/11/09/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95/</id>
-    <published>2020-11-09T07:37:49.000Z</published>
-    <updated>2020-11-09T07:41:37.157Z</updated>
-    
-    <content type="html"><![CDATA[<p>仅记录实战操作的过程，对小程序原理需要了解的，参考附件文档。</p><h1 id="0x01-反编译"><a href="#0x01-反编译" class="headerlink" title="0x01 反编译"></a>0x01 反编译</h1><p><strong>导出小程序wxapkg包</strong></p><p><code>adb pull /data/data/com.tencent.mm/MicroMsg/&#123;微信ID&#125;/appbrand/pkg/_-14931312_34.wxapkg ./</code></p><p>需要先<code>adb root</code></p><p><strong>反编译小程序包</strong></p><p><code>node wuWxapkg.js _-1496931312_34.wxapkg</code></p><p><img src="/2020/11/09/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95/image-20201109153208111.png" alt="image-20201109153208111"></p><h1 id="0x02-抓包"><a href="#0x02-抓包" class="headerlink" title="0x02 抓包"></a>0x02 抓包</h1><p>安卓7.0之后，必须导入为系统证书后，才能进行抓包，但burp证书在导入后，仍然无法进行抓包，那么就需要用到<code>charles</code>工具进行抓包。</p><p><strong>导出证书</strong></p><p>通过<code>help-&gt;SSL Proxying-&gt;save Charles root certifacate</code>导出证书，导出后导入安卓作为系统证书，即可进行抓包。</p><p><img src="/2020/11/09/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95/image-20201109150342123.png" alt="image-20201109150342123"></p><p><strong>重放数据包</strong></p><p>对数据包右键打了断点后，点击breakpoint按钮打开拦截，然后点击右键repeat进行重放，即可进行抓包</p><p><img src="/2020/11/09/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95/image-20201109152611419.png" alt="image-20201109152611419"></p><p><img src="/2020/11/09/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95/image-20201109152502367.png" alt="image-20201109152502367"></p><p><img src="/2020/11/09/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95/image-20201109152842638.png" alt="image-20201109152842638"></p><h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><ol><li><a href="./wxappUnpacker.zip">wxappUnpacker</a></li><li><a href="./%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%B8%97%E9%80%8F%E4%BA%94%E8%84%89.pdf">微信小程序的渗透五脉 - Hack Inn</a></li><li><a href="./%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%96%87%E4%BB%B6%E5%88%86%E6%9E%90.pptx">微信小程序文件分析</a></li><li><a href="./%E7%99%BE%E4%B8%BE%E7%99%BE%E6%8D%B7%EF%BC%9A%E7%BA%A2%E9%98%9F%E8%A7%86%E8%A7%92%E4%B8%8B%E5%8F%88%E4%B8%80%E4%B8%AA%E7%AA%81%E7%A0%B4%E5%8F%A3%EF%BC%8C%E5%86%8D%E7%9C%8B%E5%A4%A7%E5%9B%BD%E7%8B%AC%E6%9C%89%E5%B0%8F%E7%A8%8B%E5%BA%8F.pdf">百举百捷：红队视角下又一个突破口，再看大国独有小程序</a></li></ol>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;仅记录实战操作的过程，对小程序原理需要了解的，参考附件文档。&lt;/p&gt;
-&lt;h1 id=&quot;0x01-反编译&quot;&gt;&lt;a href=&quot;#0x01-反编译&quot; class=&quot;headerlink&quot; title=&quot;0x01 反编译&quot;&gt;&lt;/a&gt;0x01 反编译&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;</summary>
-      
-    
-    
-    
-    <category term="Pentest" scheme="http://blog.le31ei.top/categories/Pentest/"/>
-    
-    
-    <category term="微信小程序" scheme="http://blog.le31ei.top/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/"/>
     
   </entry>
   
