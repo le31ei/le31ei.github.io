@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>pandas常用代码总结 | blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="pandas," />
+  
+
+  <meta name="description" content="从九月的那次出差开始，这几个月一直跟表格打交道，最开始用openpyxl，循环对表格的数据进行处理，数据一多或者字段一多，就导致运行速度非常慢，经常处理一个几百行的数据量都要几分钟的时间。如果涉及到多数据的循环对比，那就更慢了，每一次对比就是一次笛卡尔积，python的运行效率肯定跟不上。 某天，一个老哥拿着我的代码学习，问了我一句，为什么你不用pandas，openpyxl和pandas有什么区">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pandas常用代码总结">
+<meta property="og:url" content="http://blog.le31ei.top/2022/01/05/pandas%E5%B8%B8%E7%94%A8%E4%BB%A3%E7%A0%81%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="blog">
+<meta property="og:description" content="从九月的那次出差开始，这几个月一直跟表格打交道，最开始用openpyxl，循环对表格的数据进行处理，数据一多或者字段一多，就导致运行速度非常慢，经常处理一个几百行的数据量都要几分钟的时间。如果涉及到多数据的循环对比，那就更慢了，每一次对比就是一次笛卡尔积，python的运行效率肯定跟不上。 某天，一个老哥拿着我的代码学习，问了我一句，为什么你不用pandas，openpyxl和pandas有什么区">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-05T08:21:45.000Z">
+<meta property="article:modified_time" content="2022-01-05T08:21:45.228Z">
+<meta property="article:author" content="le31ei">
+<meta property="article:tag" content="pandas">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+
+  
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NLDHMYNJBY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-NLDHMYNJBY');
+</script>
+<!-- End Google Analytics -->
+
+
+
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?ccc85f1c0e860658bc30a742eab6c9d0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.0.2"><link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">HOME</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">HOME</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            search
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E8%AF%BB%E5%86%99%E6%96%87%E4%BB%B6"><span class="toc-text">1. 读写文件</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E5%88%86%E7%BB%84%E7%AD%9B%E9%80%89%E5%90%88%E5%B9%B6"><span class="toc-text">2. 分组筛选合并</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E4%BA%A4%E9%9B%86%E5%B9%B6%E9%9B%86%E5%B7%AE%E9%9B%86"><span class="toc-text">3. 交集并集差集</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-%E5%85%B6%E4%BB%96"><span class="toc-text">4. 其他</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-pandas常用代码总结" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">pandas常用代码总结</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2022.01.05</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>le31ei</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/Program/">Program</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>从九月的那次出差开始，这几个月一直跟表格打交道，最开始用<code>openpyxl</code>，循环对表格的数据进行处理，数据一多或者字段一多，就导致运行速度非常慢，经常处理一个几百行的数据量都要几分钟的时间。如果涉及到多数据的循环对比，那就更慢了，每一次对比就是一次笛卡尔积，python的运行效率肯定跟不上。</p>
+<p>某天，一个老哥拿着我的代码学习，问了我一句，为什么你不用pandas，openpyxl和pandas有什么区别。瞬时茅舍顿开，知乎老是给我推送pandas如何如何的强，数据分析必备，为啥我没用，于是马上转移到pandas上，pandas不得不说是数据分析的神器，底层的关键操作用c语言进行了实现，结合python的易用性，pandas不愧为数据分析的必备神器。本文就记录一下我这几个月用到的常见的分析代码。</p>
+<h1 id="1-读写文件"><a href="#1-读写文件" class="headerlink" title="1. 读写文件"></a>1. 读写文件</h1><p>openpyxl读表格费时费力，读取sheet后，还需要循环读取每一个cell的值，然后才能得到整张表，在循环的时候，python运行起来就很慢了，如果表格数据量成千上万，那么读取时间会非常长。</p>
+<p>pandas虽然读取表格的底层也是openpyxl，但是做了优化，读取时间短很多，而且读取出来直接是一个DataFrame，直接能够二维操作，非常方便，而且读取的代码也异常简单。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 读取表格</span></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">data = pd.read_excel(filename)  <span class="comment"># 读取后返回一个DataFrame对象</span></span><br></pre></td></tr></table></figure>
+
+<p>以上代码在读取数据时，会默认设置数据的类型，比如是一个字符，读取后的类型就是str，如果是一个数字，读取后的类型就是int。但是有时候，需要将读取的所有数据为str，方便我们做字符串的拼接，那么就需要按照如下的方式进行读取</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">data = pd.read_excel(filename, dtype=<span class="string">&#x27;str&#x27;</span>)  <span class="comment"># 使用dtype参数，将读取的数据全部设置为str类型</span></span><br></pre></td></tr></table></figure>
+
+<p>经常在读取人工管理表的时候，存在合并单元格的情况，在使用默认方法读取表格的时候，数据只会填充第一行，合并单元格的剩余行会显示<code>Nan</code>，在处理数据的时候会非常麻烦，pandas支持默认填充方式，代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df = pd.read_excel(filename).fillna(method=<span class="string">&#x27;ffill&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码会填充合并单元格中的除第一排以外的单元格，<code>method=&#39;ffill&#39;</code>表示用前一个值去填充后面的值，还有一个<code>bfill</code>，就是用后面的值填充前面的值，一般情况下，都是用<code>ffill</code>。</p>
+<p>写表格的代码如下，可直接将DataFrame输出为excel表格：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.to_excel(<span class="string">&#x27;out.xlsx&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>默认输出的表格中，第一列会有序列号，默认带有索引值，但我们大多数时候都是不需要索引值输出的，所以一般情况下使用的输出代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.to_excel(<span class="string">&#x27;out.xlsx&#x27;</span>, index=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+
+<p>如果要指定sheet页的名称的话，加上<code>sheet_name=xxx</code> 就可以了。</p>
+<h1 id="2-分组筛选合并"><a href="#2-分组筛选合并" class="headerlink" title="2. 分组筛选合并"></a>2. 分组筛选合并</h1><p>pandas的筛选很简单，通过<code>[]</code>就能根据字段或者条件进行筛选。</p>
+<p><strong>取某几列</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">new_df = df[[<span class="string">&#x27;columns1&#x27;</span>, <span class="string">&#x27;columns2&#x27;</span>, <span class="string">&#x27;columns3&#x27;</span>]]</span><br></pre></td></tr></table></figure>
+
+<p><strong>对某列的值进行筛选，选除满足条件的值</strong></p>
+<p>以下代码可以筛选出状态列包含通过的行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df = df[df[<span class="string">&#x27;状态&#x27;</span>].<span class="built_in">str</span>.contains(<span class="string">&#x27;通过&#x27;</span>)]</span><br></pre></td></tr></table></figure>
+
+<p>如果存在多条件筛选，需要使用<code>&amp;</code>和<code>|</code>进行逻辑计算</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df = common_df[common_df[<span class="string">&#x27;风险状态_x&#x27;</span>].<span class="built_in">str</span>.contains(<span class="string">&#x27;未通过&#x27;</span>) &amp; common_df[<span class="string">&#x27;风险状态_y&#x27;</span>].<span class="built_in">str</span>.contains(<span class="string">&#x27;未通过&#x27;</span>)].copy()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>合并多个DataFrame</strong></p>
+<p>pandas在使用append函数的时候，不会改变原来的DataFrame，因此需要将返回的新的值赋值给一个DataFrame</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df = df.append([df1, df2])</span><br></pre></td></tr></table></figure>
+
+<p><strong>分组</strong></p>
+<p>对数据的分组也是经常用到的，比如将值为某某的分成一组进行输出。pandas中用到的函数为<code>groupby</code>，跟SQL中的groupby极为相似，可以非常方便的使用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">groups = df.groupby(<span class="string">&#x27;系统名称&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> sysname, item <span class="keyword">in</span> groups:</span><br><span class="line">    print(sysname)</span><br></pre></td></tr></table></figure>
+
+<p>在使用groupby的时候，会返回一个迭代器，通过循环可以读取分组后的结果，如上面代码所示，sysname为分组的依据，通过什么字符串进行的分组，item则是分组结果形成的DataFrame。</p>
+<h1 id="3-交集并集差集"><a href="#3-交集并集差集" class="headerlink" title="3. 交集并集差集"></a>3. 交集并集差集</h1><p>在数据分析中经常需要对两个或者多个数据求交集、并集和差集，pandas也提供了非常方便的<code>merge</code>函数，实现逻辑基本与SQL语言的join类似。</p>
+<p><strong>内连接</strong></p>
+<p>merge函数中的how参数需要传入连接方式的参数，参数的值有<strong>left, right, outer, inner</strong>，与SQL语言保持一致，分别是左连接，右连接，外连接和内连接。</p>
+<p>默认的值为<code>inne</code>，inner连接的作用为求两个集合的交集部分。</p>
+<p>merge函数的使用如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pd.merge(left, right, how=<span class="string">&#x27;inner&#x27;</span>, on=<span class="literal">None</span>, left_on=<span class="literal">None</span>, right_on=<span class="literal">None</span>,</span><br><span class="line">         left_index=<span class="literal">False</span>, right_index=<span class="literal">False</span>, sort=<span class="literal">True</span>,</span><br><span class="line">         suffixes=(<span class="string">&#x27;_x&#x27;</span>, <span class="string">&#x27;_y&#x27;</span>), copy=<span class="literal">True</span>, indicator=<span class="literal">False</span>,</span><br><span class="line">         validate=<span class="literal">None</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>left需要指定在左边的DataFrame，right指定在右边的DataFrame，on是一个列表，指定相交的字段，如果两边的DataFrame没有相同名称的字段，那么就需要left_on和right_on指定对应的列名。</p>
+<p><strong>所有连接产生的结果，均包含两边DataFrame的所有字段，如果字段名相同，会重命名为<code>字段_x</code>、<code>字段_y</code>。</strong></p>
+<p>实例代码参考如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">common_df = pd.merge(left=self.last_baseline_result, right=self.this_baseline_result,</span><br><span class="line">                     on=[<span class="string">&#x27;风险名称&#x27;</span>, <span class="string">&#x27;影响资产IP(公网)&#x27;</span>, <span class="string">&#x27;影响资产IP(私网)&#x27;</span>, <span class="string">&#x27;影响资产备注名称&#x27;</span>,</span><br><span class="line">                         <span class="string">&#x27;检查项分类&#x27;</span>, <span class="string">&#x27;检查项名称&#x27;</span>, <span class="string">&#x27;检查项描述&#x27;</span>, <span class="string">&#x27;风险等级&#x27;</span>, <span class="string">&#x27;检测提示&#x27;</span>, <span class="string">&#x27;修复建议&#x27;</span>],</span><br><span class="line">                     how=<span class="string">&#x27;inner&#x27;</span>, )</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>左连接、右连接</strong></p>
+<p>左连接会保留左边所有的值，并且保留右边与左边相交的值。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">X = pd.DataFrame(&#123;<span class="string">&#x27;name&#x27;</span>:[<span class="string">&#x27;A&#x27;</span>,<span class="string">&#x27;B&#x27;</span>,<span class="string">&#x27;C&#x27;</span>,<span class="string">&#x27;D&#x27;</span>],<span class="string">&#x27;age&#x27;</span>:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]&#125;)</span><br><span class="line">Y = pd.DataFrame(&#123;<span class="string">&#x27;name&#x27;</span>:[<span class="string">&#x27;A&#x27;</span>,<span class="string">&#x27;B&#x27;</span>,<span class="string">&#x27;E&#x27;</span>],<span class="string">&#x27;age&#x27;</span>:[<span class="number">1</span>,<span class="number">5</span>,<span class="number">6</span>]&#125;)</span><br><span class="line"></span><br><span class="line">print(pd.merge(X, Y, on=<span class="string">&#x27;name&#x27;</span>, how=<span class="string">&#x27;left&#x27;</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># output</span></span><br><span class="line">  name  age_x  age_y</span><br><span class="line"><span class="number">0</span>    A      <span class="number">1</span>    <span class="number">1.0</span></span><br><span class="line"><span class="number">1</span>    B      <span class="number">2</span>    <span class="number">5.0</span></span><br><span class="line"><span class="number">2</span>    C      <span class="number">3</span>    NaN</span><br><span class="line"><span class="number">3</span>    D      <span class="number">4</span>    NaN</span><br></pre></td></tr></table></figure>
+
+<p>同理，右连接会保留右边所有的值，并且保留左边与右边相交的值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">X = pd.DataFrame(&#123;<span class="string">&#x27;name&#x27;</span>:[<span class="string">&#x27;A&#x27;</span>,<span class="string">&#x27;B&#x27;</span>,<span class="string">&#x27;C&#x27;</span>,<span class="string">&#x27;D&#x27;</span>],<span class="string">&#x27;age&#x27;</span>:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]&#125;)</span><br><span class="line">Y = pd.DataFrame(&#123;<span class="string">&#x27;name&#x27;</span>:[<span class="string">&#x27;A&#x27;</span>,<span class="string">&#x27;B&#x27;</span>,<span class="string">&#x27;E&#x27;</span>],<span class="string">&#x27;age&#x27;</span>:[<span class="number">1</span>,<span class="number">5</span>,<span class="number">6</span>]&#125;)</span><br><span class="line"></span><br><span class="line">print(pd.merge(X, Y, on=<span class="string">&#x27;name&#x27;</span>, how=<span class="string">&#x27;right&#x27;</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># output</span></span><br><span class="line">  name  age_x  age_y</span><br><span class="line"><span class="number">0</span>    A    <span class="number">1.0</span>      <span class="number">1</span></span><br><span class="line"><span class="number">1</span>    B    <span class="number">2.0</span>      <span class="number">5</span></span><br><span class="line"><span class="number">2</span>    E    NaN      <span class="number">6</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>外连接</strong></p>
+<p>外连接就是求并集。取两边加起来的所有的值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">X = pd.DataFrame(&#123;<span class="string">&#x27;name&#x27;</span>:[<span class="string">&#x27;A&#x27;</span>,<span class="string">&#x27;B&#x27;</span>,<span class="string">&#x27;C&#x27;</span>,<span class="string">&#x27;D&#x27;</span>],<span class="string">&#x27;age&#x27;</span>:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]&#125;)</span><br><span class="line">Y = pd.DataFrame(&#123;<span class="string">&#x27;name&#x27;</span>:[<span class="string">&#x27;A&#x27;</span>,<span class="string">&#x27;B&#x27;</span>,<span class="string">&#x27;E&#x27;</span>],<span class="string">&#x27;age&#x27;</span>:[<span class="number">1</span>,<span class="number">5</span>,<span class="number">6</span>]&#125;)</span><br><span class="line"></span><br><span class="line">print(pd.merge(X, Y, on=<span class="string">&#x27;name&#x27;</span>, how=<span class="string">&#x27;outer&#x27;</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment">#output</span></span><br><span class="line">  name  age_x  age_y</span><br><span class="line"><span class="number">0</span>    A    <span class="number">1.0</span>    <span class="number">1.0</span></span><br><span class="line"><span class="number">1</span>    B    <span class="number">2.0</span>    <span class="number">5.0</span></span><br><span class="line"><span class="number">2</span>    C    <span class="number">3.0</span>    NaN</span><br><span class="line"><span class="number">3</span>    D    <span class="number">4.0</span>    NaN</span><br><span class="line"><span class="number">4</span>    E    NaN    <span class="number">6.0</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>差集</strong></p>
+<p>还有一种情况，就是需要求A中不包含B的部分，这个就需要用到差集。pandas的merge函数不支持直接求差集，但是经过inner连接得到交集后，能够通过取非的运算把差集求出来。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">X = pd.DataFrame(&#123;<span class="string">&#x27;name&#x27;</span>:[<span class="string">&#x27;A&#x27;</span>,<span class="string">&#x27;B&#x27;</span>,<span class="string">&#x27;C&#x27;</span>,<span class="string">&#x27;D&#x27;</span>],<span class="string">&#x27;age&#x27;</span>:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]&#125;)</span><br><span class="line">Y = pd.DataFrame(&#123;<span class="string">&#x27;name&#x27;</span>:[<span class="string">&#x27;A&#x27;</span>,<span class="string">&#x27;B&#x27;</span>,<span class="string">&#x27;E&#x27;</span>],<span class="string">&#x27;age&#x27;</span>:[<span class="number">1</span>,<span class="number">5</span>,<span class="number">6</span>]&#125;)</span><br><span class="line"></span><br><span class="line">inner = pd.merge(X, Y, on=<span class="string">&#x27;name&#x27;</span>, how=<span class="string">&#x27;inner&#x27;</span>)</span><br><span class="line">print(inner)</span><br><span class="line"></span><br><span class="line">print(X[~X[<span class="string">&#x27;name&#x27;</span>].isin(inner[<span class="string">&#x27;name&#x27;</span>])])</span><br><span class="line"></span><br><span class="line"><span class="comment"># ouput</span></span><br><span class="line">  name  age_x  age_y</span><br><span class="line"><span class="number">0</span>    A      <span class="number">1</span>      <span class="number">1</span></span><br><span class="line"><span class="number">1</span>    B      <span class="number">2</span>      <span class="number">5</span></span><br><span class="line">  name  age</span><br><span class="line"><span class="number">2</span>    C    <span class="number">3</span></span><br><span class="line"><span class="number">3</span>    D    <span class="number">4</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="4-其他"><a href="#4-其他" class="headerlink" title="4. 其他"></a>4. 其他</h1><p>除上面常用的几种操作外，还有一些小细节的东西，都记录在这里。</p>
+<p><strong>合并单元格</strong></p>
+<p>经常在表格输出的时候，需要对单元格进行合并，但是pandas并不支持单元格合并，所以需要用到集成在pandas库中的openpyxl引擎。</p>
+<p>代码可以按照如下写法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">writer = pd.ExcelWriter(<span class="string">&#x27;xxx.xlsx&#x27;</span>, engine=<span class="string">&#x27;openpyxl&#x27;</span>)</span><br><span class="line">sheet1 = writer.sheets[<span class="number">0</span>]</span><br><span class="line">sheet1.merge_cells(<span class="string">f&#x27;A<span class="subst">&#123;row&#125;</span>:A<span class="subst">&#123;end&#125;</span>&#x27;</span>)</span><br><span class="line">writer.save()</span><br><span class="line">writer.close()</span><br></pre></td></tr></table></figure>
+
+<p><strong>隐藏列</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">writer = pd.ExcelWriter(<span class="string">&#x27;xx.xlsx&#x27;</span>, engine=<span class="string">&#x27;openpyxl&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> col <span class="keyword">in</span> writer.sheets[<span class="number">0</span>].columns:</span><br><span class="line">    writer.sheets[<span class="number">0</span>].column_dimensions[<span class="built_in">str</span>(col[<span class="number">0</span>].column_letter)].hidden = <span class="literal">True</span></span><br><span class="line">writer.save()</span><br><span class="line">writer.close()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>对一列值进行操作</strong></p>
+<p>要对一列值进行操作，不需要使用循环，直接使用apply加上匿名函数，就能搞定一列值的修改，修改速度非常快。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">&#x27;name&#x27;</span>] = df[<span class="string">&#x27;name&#x27;</span>].apply(<span class="keyword">lambda</span> x: get_problem(x))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_problem</span>(<span class="params">item</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        分割问题字段，先分割逗号，再分割冒号，生成字典</span></span><br><span class="line"><span class="string">        :return:</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        ziduan = item.split(<span class="string">&#x27;,&#x27;</span>)</span><br><span class="line">        result = <span class="built_in">dict</span>(x.split(<span class="string">&#x27;:&#x27;</span>) <span class="keyword">for</span> x <span class="keyword">in</span> ziduan)</span><br><span class="line">        <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure>
+
+<p><strong>取两列生成字典</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netword_df = netword_df.set_index([<span class="string">&#x27;网段名称&#x27;</span>])[<span class="string">&#x27;地址范围&#x27;</span>].to_dict()</span><br></pre></td></tr></table></figure>
+
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2021/12/31/2021%E6%80%BB%E7%BB%93/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              search
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+    <div id="comment" class="vcomment" ></div>
+    <script>
+        var notify = 'true' == true ? true : false;
+        var verify = 'false' == true ? true : false;
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+            return GUEST_INFO.indexOf(item) > -1
+        });
+        guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+        window.valine = new Valine({
+            el: '.vcomment',
+            notify: notify,
+            verify: verify,
+            appId: "UF41K2V1YdIabj0Hd9TXLuV9-gzGzoHsz",
+            appKey: "EfXnzBbp4gTCI4U99bctAjO8",
+            avatar:'mm',
+            placeholder: "Just go",
+            guest_info:guest_info,
+            pageSize:'10'
+        });
+    </script>
+  
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
