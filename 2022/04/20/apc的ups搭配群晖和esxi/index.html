@@ -27,7 +27,7 @@
 <meta property="og:image" content="http://blog.le31ei.top/2022/04/20/apc%E7%9A%84ups%E6%90%AD%E9%85%8D%E7%BE%A4%E6%99%96%E5%92%8Cesxi/image-20220420200245881.png">
 <meta property="og:image" content="http://blog.le31ei.top/2022/04/20/apc%E7%9A%84ups%E6%90%AD%E9%85%8D%E7%BE%A4%E6%99%96%E5%92%8Cesxi/image-20220420200702934.png">
 <meta property="article:published_time" content="2022-04-20T12:09:13.000Z">
-<meta property="article:modified_time" content="2022-04-20T12:09:13.211Z">
+<meta property="article:modified_time" content="2022-04-20T12:12:30.746Z">
 <meta property="article:author" content="le31ei">
 <meta property="article:tag" content="homelab">
 <meta name="twitter:card" content="summary">
@@ -266,6 +266,7 @@
 <p>而针对esxi要稍微简单一些，直接提供了界面进行编辑，路径在管理-&gt;系统-&gt;高级设置，里面筛选nut相关的配置项</p>
 <p><img src="/2022/04/20/apc%E7%9A%84ups%E6%90%AD%E9%85%8D%E7%BE%A4%E6%99%96%E5%92%8Cesxi/image-20220420200245881.png" alt="image-20220420200245881"></p>
 <p>同样，修改password，user和upsname为对应的参数即可。</p>
+<p>配置完后，可以使用命令<code>upsc ups@192.168.xx.xx</code>测试是否能连上ups，如果回显ups的参数则说明配置成功</p>
 <h1 id="4-修改群晖默认的安全模式"><a href="#4-修改群晖默认的安全模式" class="headerlink" title="4. 修改群晖默认的安全模式"></a>4. 修改群晖默认的安全模式</h1><p>群晖在ups发送了断电信号后，不会直接关机，而是进入到一个安全模式下，web连不上，但是系统并没有自行关机，所以需要修改默认的参数进行关机。</p>
 <p>步骤如下：</p>
 <ol>
