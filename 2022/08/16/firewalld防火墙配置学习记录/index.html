@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>firewalld防火墙配置学习记录 | blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="firewalld," />
+  
+
+  <meta name="description" content="最近在工作中需要对服务器进行来源访问的限制，之前一直没学过centos的防火墙配置方法，终于完整的对firewalld防火墙配置进行了一次完整的学习。以前在使用centos服务器的时候，直接一上来就systemctl stop firewalld，直接将防火墙关闭，在真实生产环境中不得不使用firewalld进行端口来源的限制，也就不能直接关闭了。 1. 概念firewalld和iptables均">
+<meta property="og:type" content="article">
+<meta property="og:title" content="firewalld防火墙配置学习记录">
+<meta property="og:url" content="http://blog.le31ei.top/2022/08/16/firewalld%E9%98%B2%E7%81%AB%E5%A2%99%E9%85%8D%E7%BD%AE%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="blog">
+<meta property="og:description" content="最近在工作中需要对服务器进行来源访问的限制，之前一直没学过centos的防火墙配置方法，终于完整的对firewalld防火墙配置进行了一次完整的学习。以前在使用centos服务器的时候，直接一上来就systemctl stop firewalld，直接将防火墙关闭，在真实生产环境中不得不使用firewalld进行端口来源的限制，也就不能直接关闭了。 1. 概念firewalld和iptables均">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-16T09:27:57.000Z">
+<meta property="article:modified_time" content="2022-08-16T09:27:57.691Z">
+<meta property="article:author" content="le31ei">
+<meta property="article:tag" content="firewalld">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+
+  
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NLDHMYNJBY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-NLDHMYNJBY');
+</script>
+<!-- End Google Analytics -->
+
+
+
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?ccc85f1c0e860658bc30a742eab6c9d0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.0.2"><link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">HOME</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">HOME</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            search
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%A6%82%E5%BF%B5"><span class="toc-text">1. 概念</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-firewalld%E5%B8%B8%E7%94%A8%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-text">2. firewalld常用使用方法</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-firewalld防火墙配置学习记录" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">firewalld防火墙配置学习记录</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2022.08.16</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>le31ei</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/%E5%AE%89%E5%85%A8%E8%BF%90%E7%BB%B4/">安全运维</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>最近在工作中需要对服务器进行来源访问的限制，之前一直没学过centos的防火墙配置方法，终于完整的对firewalld防火墙配置进行了一次完整的学习。以前在使用centos服务器的时候，直接一上来就<code>systemctl stop firewalld</code>，直接将防火墙关闭，在真实生产环境中不得不使用firewalld进行端口来源的限制，也就不能直接关闭了。</p>
+<h1 id="1-概念"><a href="#1-概念" class="headerlink" title="1. 概念"></a>1. 概念</h1><p>firewalld和iptables均属于防火墙管理工具，真正进行过滤的是系统内核的netfilter网络过滤器来进行处理。在centos7以前的版本中，采用的是iptables进行防火墙管理，在centos7及以后的版本中，采用的是firewalld进行管理，本文主要关注firewalld的相关知识。</p>
+<p>firewalld添加了区域（zone）的概念，区域是firewalld内置的几套策略目标，用户可以根据不同的使用场景，套用对应的策略模板。在centos中默认的区域是public，该区域拒绝所有入站流量，仅允许ssh和dhcpv6-client相关流量。</p>
+<p>以下是摘抄的几个区域的相关规则</p>
+<table>
+<thead>
+<tr>
+<th align="left">区域</th>
+<th>策略规则</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">trusted</td>
+<td>允许所有的数据包</td>
+</tr>
+<tr>
+<td align="left">home</td>
+<td>拒绝入站流量，放行ssh、mdns、ipp-client、amba-client、dhcpv6-client的流量</td>
+</tr>
+<tr>
+<td align="left">internal</td>
+<td>与home相同</td>
+</tr>
+<tr>
+<td align="left">work</td>
+<td>拒绝入站流量，放行ssh、ipp-client、dhcpv6-client的流量</td>
+</tr>
+<tr>
+<td align="left">public</td>
+<td>拒绝入站流量，放行ssh、ipp-client的流量</td>
+</tr>
+<tr>
+<td align="left">external</td>
+<td>拒绝入站流量，放行ssh的流量</td>
+</tr>
+<tr>
+<td align="left">dmz</td>
+<td>拒绝入站流量，放行ssh流量</td>
+</tr>
+<tr>
+<td align="left">block</td>
+<td>拒绝入站流量</td>
+</tr>
+<tr>
+<td align="left">drop</td>
+<td>拒绝入站流量</td>
+</tr>
+</tbody></table>
+<h1 id="2-firewalld常用使用方法"><a href="#2-firewalld常用使用方法" class="headerlink" title="2. firewalld常用使用方法"></a>2. firewalld常用使用方法</h1><p>配置firewalld防火墙一般使用<code>firewall-cmd</code> 命令进行配置，配置的类型一般为：</p>
+<ol>
+<li>选定区域确定默认的规则</li>
+<li>绑定协议或者端口决定是否允许放行</li>
+<li>端口转发</li>
+<li>富规则的配置</li>
+</ol>
+<p>firewall-cmd在配置好后，都需要进行reload操作，操作命令为<code>firewall-cmd --reload</code></p>
+<p>添加规则的时候，如果没有<code>--permanent</code>则为临时规则，reload后失效，添加了该参数后，reload后，配置仍然存在。</p>
+<p><strong>1、区域的相关操作</strong> </p>
+<p>区域与端口、连接、接口是多对一的关系，所以一个端口、连接、接口只能属于一个区域。</p>
+<p><code>firewall-cmd --get-default-zone</code>：获取目前默认的区域名称。</p>
+<p><code>firewall-cmd --set-default-zone=public</code>：设置默认的区域</p>
+<p><code>firewall-cmd --get-zones</code>：显示可用的区域</p>
+<p><code>firewall-cmd --list-all-zones</code>：显示所有区域的配置</p>
+<p><code>firewall-cmd --zone=public --list-all</code>: 显示指定区域</p>
+<p><code>firewall-cmd --get-zone-of-interface=ens19</code>：显示网卡所绑定的区域</p>
+<p><code>firewall-cmd --permanent --zone=external --change-interface=ens19</code>：修改网卡所在的默认区域</p>
+<p><strong>2、流量协议操作</strong></p>
+<p><code>firewall-cmd --zone=public --query-service=ssh</code>：查看协议是否放行</p>
+<p><code>firewall-cmd --permanent --zone=public --add-service=https</code>：将协议添加到放行</p>
+<p><code>firewall-cmd --permanent --zone=public --remove-service=https</code>：将协议从放行中删除</p>
+<p><strong>3、端口操作</strong></p>
+<p><code>firewall-cmd --zone=public --list-ports</code>：查看当前区域放行的端口</p>
+<p><code>firewall-cmd --zone=public --add-port=8000/tcp</code>：当前区域放行端口</p>
+<p><code>firewall-cmd --zone=public --remove-port=8000/tcp</code>：删除放行端口</p>
+<p><strong>4、端口转发</strong></p>
+<p>目的是将某个端口的访问流量转发到另一个端口，<strong>前提必须将两个端口同时放行</strong></p>
+<p><code>firewall-cmd --zone=public --add-forward-port=port=9000:proto=tcp:toport=8000:toaddr=192.168.100.54</code>：在访问9000端口的时候，防火墙会将访问流量转发到8000上面</p>
+<p><code>firewall-cmd --zone=public --remove-forward-port=port=9000:proto=tcp:toport=8000:toaddr=192.168.100.54</code>：删除规则</p>
+<p><strong>5、富规则</strong></p>
+<p>相当于更加底层的人工规则，能够更加细致的设置防火墙规则，使用<code>--add-rich-rule</code>、<code>--list-rich-rules</code>、<code>--remove-rich-rule</code>来进行管理富规则。</p>
+<p><code>firewall-cmd --remove-rich-rule &#39;rule family=&quot;ipv4&quot; source address=&quot;192.168.100.89&quot; port port=&quot;8000&quot; protocol=&quot;tcp&quot; accept&#39;</code>：删除这条富规则</p>
+<p><code>firewall-cmd --list-rich-rules</code>：列出所有的富规则</p>
+<p><code>firewall-cmd --zone=public --add-rich-rule=&quot;rule family=&#39;ipv4&#39; source address=&#39;192.168.100.10&#39; port port=22 protocol=tcp reject&quot;</code>：禁止192.168.100.10访问本机的22端口</p>
+<p><code>firewall-cmd --zone=public --add-rich-rule &#39;rule family=ipv4 source address=10.1.0.3 forward-port port=80 protocol=tcp to-port=6532&#39;</code>:允许来自主机 10.1.0.3 到 80 端口的 IPv4 的 TCP 流量，并将流量转发到 6532 端口上。 </p>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2022/04/20/apc%E7%9A%84ups%E6%90%AD%E9%85%8D%E7%BE%A4%E6%99%96%E5%92%8Cesxi/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              search
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+    <div id="comment" class="vcomment" ></div>
+    <script>
+        var notify = 'true' == true ? true : false;
+        var verify = 'false' == true ? true : false;
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+            return GUEST_INFO.indexOf(item) > -1
+        });
+        guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+        window.valine = new Valine({
+            el: '.vcomment',
+            notify: notify,
+            verify: verify,
+            appId: "UF41K2V1YdIabj0Hd9TXLuV9-gzGzoHsz",
+            appKey: "EfXnzBbp4gTCI4U99bctAjO8",
+            avatar:'mm',
+            placeholder: "Just go",
+            guest_info:guest_info,
+            pageSize:'10'
+        });
+    </script>
+  
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
